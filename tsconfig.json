@@ -2,10 +2,7 @@
   "compilerOptions": {
     "incremental": true,
     "target": "es2016",
-    "lib": [
-      "es2016",
-      "esnext"
-    ],
+    "lib": ["es2016", "esnext"],
     "jsx": "preserve",
     "module": "commonjs",
     "allowJs": true,
@@ -23,15 +20,8 @@
     "rootDir": "src",
     "baseUrl": ".",
     "paths": {
-      "*": [
-        "./src/*"
-      ]
+      "*": ["./src/*"]
     }
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "src/tests"
-  ]
+  "include": ["src/**/*"]
 }
