@@ -3,7 +3,7 @@ with pkgs;
 mkShell {
   nativeBuildInputs = [
     nodejs-18_x
-    yarn
+    nodePackages.pnpm
     git
     jq
     moreutils
