@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "main": "dist/index.js",
   "license": "MIT",
-  "description": "Install node modules using the pnpm API",
+  "description": "Install packages using the pnpm API",
   "author": {
     "name": "Zebreus",
     "email": "lennarteichhorn@googlemail.com"
@@ -50,7 +50,12 @@
     "dist/**"
   ],
   "keywords": [
-    "library"
+    "install",
+    "add",
+    "package",
+    "module",
+    "installer",
+    "pnpm"
   ],
   "dependencies": {
     "@pnpm/config": "^15.6.1",
