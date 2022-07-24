@@ -6,9 +6,23 @@ import writeProjectManifest from "@pnpm/write-project-manifest"
 import path from "path"
 
 type AddPackagesOptions = {
-  /** The directory of the project where the packages will be added */
+  /** The directory of the project where the packages will be added
+   *
+   * @default process.cwd()
+   */
   directory?: string
-  /** Add the packages to dev dependencies */
+  /** Specify the type of dependency. Peer dependencys also get added to the dev dependencies.
+   *
+   * `normal` => `dependencies`
+   *
+   * `dev` => `devDependencies`
+   *
+   * `optional` => `optionalDependencies`
+   *
+   * `peer` => `peerDependencies` __&__ `devDependencies`
+   *
+   * @default "normal"
+   */
   type?: "normal" | "dev" | "optional" | "peer"
 }
 
@@ -17,10 +31,12 @@ export const addPackages = async (packages: string | string[], options?: AddPack
   const directory = options?.directory ?? process.cwd()
   const type = options?.type ?? "normal"
 
-  const { manifest, fileName } = await readProjectManifest(process.cwd())
+  const { manifest, fileName } = await readProjectManifest(directory)
 
   const config = await getConfig({
-    cliOptions: {},
+    cliOptions: {
+      dir: directory,
+    },
     packageManager: {
       name: "yarn",
       version: "4.0.0",
@@ -28,7 +44,11 @@ export const addPackages = async (packages: string | string[], options?: AddPack
     workspaceDir: directory,
   })
 
-  const storeController = await createOrConnectStoreController({ ...config.config })
+  const storeController = await createOrConnectStoreController({
+    ...config.config,
+    dir: directory,
+    workspaceDir: directory,
+  })
 
   const projects = await mutateModules(
     [
@@ -37,7 +57,13 @@ export const addPackages = async (packages: string | string[], options?: AddPack
         allowNew: true,
         dependencySelectors: packagesArray,
         targetDependenciesField:
-          type === "dev" ? "devDependencies" : type === "optional" ? "optionalDependencies" : "dependencies",
+          type === "dev"
+            ? "devDependencies"
+            : type === "optional"
+            ? "optionalDependencies"
+            : type === "peer"
+            ? "devDependencies"
+            : "dependencies",
         mutation: "installSome",
         peer: type === "peer",
         pruneDirectDependencies: true,
@@ -47,6 +73,10 @@ export const addPackages = async (packages: string | string[], options?: AddPack
     {
       storeDir: storeController.dir,
       storeController: storeController.ctrl,
+      useLockfile: true,
+      saveLockfile: true,
+      fixLockfile: true,
+      lockfileDir: directory,
     }
   )
 
