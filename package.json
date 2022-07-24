@@ -13,11 +13,13 @@
     "url": "https://github.com/Zebreus/install-pnpm-package"
   },
   "devDependencies": {
+    "@pnpm/logger": "^4.0.0",
     "@types/eslint": "^8.4.5",
     "@types/jest": "^28.1.6",
     "@types/node": "^18.6.0",
     "@typescript-eslint/eslint-plugin": "^5.30.7",
     "@typescript-eslint/parser": "^5.30.7",
+    "@yarnpkg/core": "4.0.0-rc.14",
     "eslint": "^8.20.0",
     "eslint-import-resolver-typescript": "^3.3.0",
     "eslint-plugin-import": "^2.26.0",
@@ -49,5 +51,16 @@
   ],
   "keywords": [
     "library"
-  ]
+  ],
+  "dependencies": {
+    "@pnpm/config": "^15.6.1",
+    "@pnpm/core": "^5.7.0",
+    "@pnpm/read-project-manifest": "^3.0.6",
+    "@pnpm/store-connection-manager": "^4.1.22",
+    "@pnpm/write-project-manifest": "^3.0.5"
+  },
+  "peerDependencies": {
+    "@pnpm/logger": "^4.0.0",
+    "@yarnpkg/core": "4.0.0-rc.14"
+  }
 }
