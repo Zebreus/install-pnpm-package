@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-22.04
     defaults:
       run:
-        shell: nix-shell --run "/bin/sh {0}"
+        shell: nix-shell --run "/usr/bin/bash --noprofile --norc -e -o pipefail {0}"
 
     steps:
       - uses: actions/checkout@v3
@@ -20,33 +20,12 @@ jobs:
       - uses: cachix/install-nix-action@v17
         with:
           nix_path: nixpkgs=channel:nixos-22.05
-      - name: shelltest
-        run: echo hi && echo $0 $1
-        shell: /bin/sh {0}
-        continue-on-error: true
-      - name: shelltest 2
-        run: echo hi && echo $0 $1
-        shell: /bin/sh -c "echo {0} "
-        continue-on-error: true
-      - name: shelltest 3
-        run: echo hi && echo $0 $1
-        shell: /bin/sh -c "/bin/sh {0}"
-        continue-on-error: true
-      - name: shelltest 4
-        run: echo hi && echo $0 $1
-        shell: /bin/sh -c "/bin/sh {0}.sh"
-        continue-on-error: true
-      - name: shelltest 5
-        run: echo hi && echo $0 $1
-        shell: /bin/sh -c "ls $(basename {0})"
-        continue-on-error: true
-      - name: shelltest 6
-        run: echo hi && echo $0 $1
-        shell: nix-shell --run "echo {0}"
-        continue-on-error: true
-      - name: shelltest 7
-        run: echo hi && echo $0 $1
+      - run: pnpm install
         shell: nix-shell --run "/bin/sh {0}"
         continue-on-error: true
       - run: pnpm install
+        shell: nix-shell --run "/usr/bin/bash {0}"
+        continue-on-error: true
+      - run: pnpm install
+        continue-on-error: true
       - run: pnpm test

@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-22.04
     defaults:
       run:
-        shell: nix-shell --run "/usr/bin/bash --noprofile --norc -e -o pipefail {0}"
+        shell: sudo nix-shell --run "/usr/bin/bash --noprofile --norc -e -o pipefail {0}"
 
     steps:
       - uses: actions/checkout@v3
@@ -20,14 +20,45 @@ jobs:
       - uses: awalsh128/cache-apt-pkgs-action@v1.1.0
         with:
           packages: nix-setup-systemd
-          version: 1
+          version: 2
       - run: whoami
         shell: bash
+      - name: shelltest
+        run: echo hi && echo $0 $1
+        shell: /bin/sh {0}
+        continue-on-error: true
+      - name: shelltest 2
+        run: echo hi && echo $0 $1
+        shell: /bin/sh -c "echo {0} "
+        continue-on-error: true
+      - name: shelltest 3
+        run: echo hi && echo $0 $1
+        shell: /bin/sh -c "/bin/sh {0}"
+        continue-on-error: true
+      - name: shelltest 4
+        run: echo hi && echo $0 $1
+        shell: /bin/sh -c "/bin/sh {0}.sh"
+        continue-on-error: true
+      - name: shelltest 5
+        run: echo hi && echo $0 $1
+        shell: /bin/sh -c "ls $(basename {0})"
+        continue-on-error: true
+      - name: shelltest 6
+        run: echo hi && echo $0 $1
+        shell: nix-shell --run "echo {0}"
+        continue-on-error: true
+      - name: shelltest 7
+        run: echo hi && echo $0 $1
+        shell: nix-shell --run "/bin/sh {0}"
+        continue-on-error: true
+      - name: shelltest
+        run: export
+        shell: /bin/sh {0}
+        continue-on-error: true
       - run: stat /etc/nix/nix.conf
         shell: bash
       - run: cat /etc/nix/nix.conf
         shell: bash
-
       - run: sudo nix-channel --add https://nixos.org/channels/nixos-22.05 nixpkgs
         shell: bash
       - run: sudo nix-channel --update
