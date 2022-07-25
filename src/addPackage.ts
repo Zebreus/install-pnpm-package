@@ -4,6 +4,7 @@ import readProjectManifest from "@pnpm/read-project-manifest"
 import { createOrConnectStoreController } from "@pnpm/store-connection-manager"
 import writeProjectManifest from "@pnpm/write-project-manifest"
 import path from "path"
+import { simplifyPeerDependencyIssues } from "simplifyPeerDependencyIssues"
 
 type AddPackageOptions = {
   /** The directory of the project where the packages will be added
@@ -81,4 +82,6 @@ export const addPackage = async (packages: string | string[], options?: AddPacka
   )
 
   await writeProjectManifest(path.resolve(directory, fileName), projects[0].manifest)
+
+  return projects[0].peerDependencyIssues && simplifyPeerDependencyIssues(projects[0].peerDependencyIssues)
 }

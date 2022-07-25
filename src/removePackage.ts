@@ -4,6 +4,7 @@ import readProjectManifest from "@pnpm/read-project-manifest"
 import { createOrConnectStoreController } from "@pnpm/store-connection-manager"
 import writeProjectManifest from "@pnpm/write-project-manifest"
 import path from "path"
+import { simplifyPeerDependencyIssues } from "simplifyPeerDependencyIssues"
 
 type RemovePackageOptions = {
   /** The directory of the project from which the packages will be removed
@@ -80,4 +81,6 @@ export const removePackage = async (packages: string | string[], options?: Remov
   console.log(projects[0].peerDependencyIssues)
 
   await writeProjectManifest(path.resolve(directory, fileName), projects[0].manifest)
+
+  return projects[0].peerDependencyIssues && simplifyPeerDependencyIssues(projects[0].peerDependencyIssues)
 }
