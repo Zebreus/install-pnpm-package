@@ -1,4 +1,4 @@
-name: Test with pnpm and node on ubuntu
+name: Test nix install with nix installer
 
 on: [push]
 
