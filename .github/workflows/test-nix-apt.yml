@@ -19,8 +19,8 @@ jobs:
           key: nix-store
       - uses: awalsh128/cache-apt-pkgs-action@v1.1.0
         with:
-          packages: nix-setup-systemd
-          version: 2
+          packages: nix-setup-systemd nix-bin
+          version: 3
       - run: whoami
         shell: bash
       - name: shelltest
@@ -58,16 +58,14 @@ jobs:
       - run: |-
           echo "trusted-users = root $USER" | sudo tee -a /etc/nix/nix.conf
           echo "max-jobs = auto" | sudo tee -a /etc/nix/nix.conf
-          sudo gpasswd -a runner nix-users
+          sudo gpasswd -a $USER nix-users
+          sudo chown -R $USER /nix
+          sudo nix-channel --add https://nixos.org/channels/nixos-22.05 nixpkgs
+          sudo nix-channel --update
           sudo chown -R $USER /nix
           sudo chmod -R 0755 /etc/nix
-        shell: /bin/sh {0}
+        shell: bash
         continue-on-error: true
-      - run: |-
-          nix-channel --add https://nixos.org/channels/nixos-22.05 nixpkgs
-          nix-channel --update
-          sudo chown -R $USER /nix
-        shell: /bin/sh {0}
 
       - run: pnpm install
         continue-on-error: true
