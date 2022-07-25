@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-22.04
     defaults:
       run:
-        shell: sudo nix-shell --run "/usr/bin/bash --noprofile --norc -e -o pipefail {0}"
+        shell: nix-shell --run "/usr/bin/bash --noprofile --norc -e -o pipefail {0}"
 
     steps:
       - uses: actions/checkout@v3
@@ -53,6 +53,16 @@ jobs:
         continue-on-error: true
       - name: shelltest
         run: export
+        shell: /bin/sh {0}
+        continue-on-error: true
+      - run: |-
+          ls /nix/var/nix/profiles/per-user
+          echo "trusted-users = root $USER" >> /etc/nix/nix.conf
+          echo "max-jobs = auto" >> /etc/nix/nix.conf
+          add_config "build-users-group ="
+          sudo chmod 0755 /etc/nix
+          echo "/nix/var/nix/profiles/default/bin" >> "$GITHUB_PATH"
+          echo "/nix/var/nix/profiles/per-user/$USER/profile/bin" >> "$GITHUB_PATH"
         shell: /bin/sh {0}
         continue-on-error: true
       - run: stat /etc/nix/nix.conf
