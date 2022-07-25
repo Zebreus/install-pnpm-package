@@ -45,6 +45,8 @@ jobs:
         shell: bash
       - run: stat  /nix/store/069i7sasmcvwxwz3dx2g55xmnl38zjb1-openssl-1.1.1q-dev || true
         shell: bash
+      - run: sudo nix-store --verify --repair --check-contents
+        shell: bash
       - run: pnpm install
       - run: stat  /nix/store/069i7sasmcvwxwz3dx2g55xmnl38zjb1-openssl-1.1.1q-dev || true
         shell: bash
