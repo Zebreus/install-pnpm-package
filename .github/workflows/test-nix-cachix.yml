@@ -11,30 +11,35 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: cachix/install-nix-action@v17
+      - name: Install nix
+        uses: cachix/install-nix-action@v17
         with:
           nix_path: nixpkgs=channel:nixos-22.05
-      - run: sudo mkdir -p /storetmp && sudo mv /nix/store/* /storetmp
+      - name: Move files away
+        run: sudo mkdir -p /storetmp && sudo mv /nix/store/* /storetmp
         shell: bash
-      - run: sudo stat /nix/store
+      - run: sudo stat /nix/store && sudo ls /nix/store | wc
         shell: bash
       - run: |-
           sudo rm -rf /nix/store && sudo mkdir -p /nix/store && sudo chown -R $USER /nix/store && sudo chmod a+rwx /nix/store
         shell: bash
-      - name: Cache nix
+      - name: Load cache
         id: cache-nix-nix
         uses: actions/cache@v3
         with:
           path: /nix/store
-          key: funkey
-      - run: sudo mkdir -p /nix/store && sudo mv -n /storetmp/* /nix/store
+          key: funkeyb
+      - run: sudo stat /nix/store  && sudo ls /nix/store | wc
         shell: bash
-      - run: sudo stat /nix/store
+      - name: Move files back
+        run: sudo mkdir -p /nix/store && sudo mv -n /storetmp/* /nix/store
+        shell: bash
+      - run: sudo stat /nix/store  && sudo ls /nix/store | wc
         shell: bash
       - run: |-
           sudo chown -R root:0 /nix/store && sudo chown root:30000 /nix/store && sudo chmod 1775 /nix/store && sudo chmod -R a-w /nix/store
         shell: bash
-      - run: sudo stat /nix/store
+      - run: sudo stat /nix/store && sudo ls /nix/store | wc
         shell: bash
       - run: pnpm install
       - run: pnpm test
