@@ -55,26 +55,14 @@ jobs:
         run: export
         shell: /bin/sh {0}
         continue-on-error: true
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        continue-on-error: true
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        continue-on-error: true
       - run: |-
-          ls /nix/var/nix/profiles/per-user
           echo "trusted-users = root $USER" | sudo tee -a /etc/nix/nix.conf
           echo "max-jobs = auto" | sudo tee -a /etc/nix/nix.conf
-          echo "build-users-group =" | sudo tee -a /etc/nix/nix.conf
-          sudo chmod 0755 /etc/nix
-          echo "/nix/var/nix/profiles/default/bin" >> "$GITHUB_PATH"
-          echo "/nix/var/nix/profiles/per-user/$USER/profile/bin" >> "$GITHUB_PATH"
+          sudo gpasswd -a runner nix-users
+          sudo chown -R $USER /nix
+          sudo chmod -R 0755 /etc/nix
         shell: /bin/sh {0}
         continue-on-error: true
-      - run: sudo /bin/sh -c "nix-daemon & ; disown"
-        shell: /bin/sh {0}
-      - run: stat /etc/nix/nix.conf
-        shell: bash
       - run: cat /etc/nix/nix.conf
         shell: bash
       - run: sudo nix-channel --add https://nixos.org/channels/nixos-22.05 nixpkgs
@@ -83,4 +71,10 @@ jobs:
         shell: bash
 
       - run: pnpm install
+        continue-on-error: true
       - run: pnpm test
+        continue-on-error: true
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 10
+        continue-on-error: true
