@@ -78,6 +78,7 @@ export const addPackage = async (packages: string | string[], options?: AddPacka
       saveLockfile: true,
       fixLockfile: true,
       lockfileDir: directory,
+      autoInstallPeers: true,
     }
   )
 

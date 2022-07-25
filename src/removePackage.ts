@@ -75,6 +75,7 @@ export const removePackage = async (packages: string | string[], options?: Remov
       saveLockfile: true,
       fixLockfile: true,
       lockfileDir: directory,
+      autoInstallPeers: true,
     }
   )
 
