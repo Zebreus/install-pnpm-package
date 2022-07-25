@@ -57,9 +57,9 @@ jobs:
         continue-on-error: true
       - run: |-
           ls /nix/var/nix/profiles/per-user
-          echo "trusted-users = root $USER" >> /etc/nix/nix.conf
-          echo "max-jobs = auto" >> /etc/nix/nix.conf
-          add_config "build-users-group ="
+          echo "trusted-users = root $USER" | sudo tee -a /etc/nix/nix.conf
+          echo "max-jobs = auto" | sudo tee -a /etc/nix/nix.conf
+          echo "build-users-group =" | sudo tee -a /etc/nix/nix.conf
           sudo chmod 0755 /etc/nix
           echo "/nix/var/nix/profiles/default/bin" >> "$GITHUB_PATH"
           echo "/nix/var/nix/profiles/per-user/$USER/profile/bin" >> "$GITHUB_PATH"
