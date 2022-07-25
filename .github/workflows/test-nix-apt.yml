@@ -65,6 +65,8 @@ jobs:
           echo "/nix/var/nix/profiles/per-user/$USER/profile/bin" >> "$GITHUB_PATH"
         shell: /bin/sh {0}
         continue-on-error: true
+      - run: sudo /bin/sh -c "nix-daemon & ; disown"
+        shell: /bin/sh {0}
       - run: stat /etc/nix/nix.conf
         shell: bash
       - run: cat /etc/nix/nix.conf
