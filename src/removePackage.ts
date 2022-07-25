@@ -78,9 +78,11 @@ export const removePackage = async (packages: string | string[], options?: Remov
     }
   )
 
-  console.log(projects[0].peerDependencyIssues)
-
   await writeProjectManifest(path.resolve(directory, fileName), projects[0].manifest)
 
-  return projects[0].peerDependencyIssues && simplifyPeerDependencyIssues(projects[0].peerDependencyIssues)
+  const peerDependencyIssues = projects[0].peerDependencyIssues
+    ? simplifyPeerDependencyIssues(projects[0].peerDependencyIssues)
+    : []
+
+  return peerDependencyIssues
 }

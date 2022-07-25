@@ -83,5 +83,9 @@ export const addPackage = async (packages: string | string[], options?: AddPacka
 
   await writeProjectManifest(path.resolve(directory, fileName), projects[0].manifest)
 
-  return projects[0].peerDependencyIssues && simplifyPeerDependencyIssues(projects[0].peerDependencyIssues)
+  const peerDependencyIssues = projects[0].peerDependencyIssues
+    ? simplifyPeerDependencyIssues(projects[0].peerDependencyIssues)
+    : []
+
+  return peerDependencyIssues
 }
