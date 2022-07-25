@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-22.04
     defaults:
       run:
-        shell: nix-shell --run '/usr/bin/bash {0}'
+        shell: nix-shell --run '/usr/bin/bash {0}.sh'
 
     steps:
       - uses: actions/checkout@v3
@@ -20,6 +20,8 @@ jobs:
       - uses: cachix/install-nix-action@v17
         with:
           nix_path: nixpkgs=channel:nixos-22.05
-
+      - name: shelltest
+        run: echo hi
+        shell: /usr/bin/bash -c 'ls $(dirname {0} )'
       - run: pnpm install
       - run: pnpm test
