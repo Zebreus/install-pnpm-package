@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-22.04
     defaults:
       run:
-        shell: nix-shell --run '/usr/bin/bash {0}.sh'
+        shell: nix-shell --run "/bin/sh {0}"
 
     steps:
       - uses: actions/checkout@v3
@@ -30,10 +30,23 @@ jobs:
         continue-on-error: true
       - name: shelltest 3
         run: echo hi && echo $0 $1
-        shell: /bin/sh
+        shell: /bin/sh -c "/bin/sh {0}"
+        continue-on-error: true
       - name: shelltest 4
         run: echo hi && echo $0 $1
-        shell: /bin/sh -c "/bin/sh {0}"
+        shell: /bin/sh -c "/bin/sh {0}.sh"
+        continue-on-error: true
+      - name: shelltest 5
+        run: echo hi && echo $0 $1
+        shell: /bin/sh -c "ls $(basename {0})"
+        continue-on-error: true
+      - name: shelltest 6
+        run: echo hi && echo $0 $1
+        shell: nix-shell --run "echo {0}"
+        continue-on-error: true
+      - name: shelltest 7
+        run: echo hi && echo $0 $1
+        shell: nix-shell --run "/bin/sh {0}"
         continue-on-error: true
       - run: pnpm install
       - run: pnpm test
