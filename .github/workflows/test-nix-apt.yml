@@ -11,11 +11,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Cache nix
+      - name: Cache nix store
         id: cache-nix
         uses: actions/cache@v3
         with:
-          path: /nix
+          path: /nix/store
           key: nix-store
       - uses: awalsh128/cache-apt-pkgs-action@v1.1.0
         with:
