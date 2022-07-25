@@ -17,7 +17,7 @@ jobs:
       - run: sudo stat /nix/store
         shell: bash
       - run: |-
-          sudo rm -rf /nix/store && sudo mkdir -p /nix/store && sudo chown -R $USER /nix/store && sudo chmod -R a+rwx /nix/store
+          sudo rm -rf /nix/store && sudo mkdir -p /nix/store && sudo chown -R $USER /nix/store && sudo chmod a+rwx /nix/store
         shell: bash
       - name: Cache nix
         id: cache-nix-nix
@@ -27,7 +27,8 @@ jobs:
           key: funkey
       - run: sudo stat /nix/store
         shell: bash
-      - run: sudo chown -R root:30000 /nix/store
+      - run: |-
+          sudo chown root:30000 /nix/store && chown root:0 /nix/store/* && sudo chmod 1775 /nix/store && sudo chmod -R a-w /nix/store
         shell: bash
       - run: sudo stat /nix/store
         shell: bash
