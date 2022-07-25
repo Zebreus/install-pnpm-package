@@ -39,7 +39,7 @@
     "lint": "eslint --cache && tsc --noEmit",
     "test": "jest",
     "postinstall": "husky install",
-    "prepack": "pinst --disable && tsc --project tsconfig.build.json && resolve-tspaths -p tsconfig.build.json",
+    "prepack": "pinst --disable && rm -rf dist && tsc --project tsconfig.build.json && resolve-tspaths -p tsconfig.build.json",
     "postpack": "pinst --enable",
     "build": "tsc --project tsconfig.build.json && resolve-tspaths -p tsconfig.build.json",
     "prepublish": "eslint --cache && tsc --noEmit"
