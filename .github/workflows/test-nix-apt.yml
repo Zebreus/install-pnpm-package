@@ -63,12 +63,11 @@ jobs:
           sudo chmod -R 0755 /etc/nix
         shell: /bin/sh {0}
         continue-on-error: true
-      - run: cat /etc/nix/nix.conf
-        shell: bash
-      - run: sudo nix-channel --add https://nixos.org/channels/nixos-22.05 nixpkgs
-        shell: bash
-      - run: sudo nix-channel --update
-        shell: bash
+      - run: |-
+          nix-channel --add https://nixos.org/channels/nixos-22.05 nixpkgs
+          nix-channel --update
+          sudo chown -R $USER /nix
+        shell: /bin/sh {0}
 
       - run: pnpm install
         continue-on-error: true
