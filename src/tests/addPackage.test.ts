@@ -7,7 +7,7 @@ test("Adding package does not crash", async () => {
   await runInDirectory(async dir => {
     await expect(addPackage("ora@latest", { directory: dir })).resolves.not.toThrow()
   })
-})
+}, 60000)
 
 test("Adding package to dependencies works", async () => {
   await runInDirectory(async dir => {
@@ -19,7 +19,7 @@ test("Adding package to dependencies works", async () => {
     expect(packageJson.peerDependencies?.ora).toBeUndefined()
     expect(packageJson.optionalDependencies?.ora).toBeUndefined()
   })
-})
+}, 60000)
 
 test("Adding package to dev dependencies works", async () => {
   await runInDirectory(async dir => {
@@ -31,7 +31,7 @@ test("Adding package to dev dependencies works", async () => {
     expect(packageJson.peerDependencies?.ora).toBeUndefined()
     expect(packageJson.optionalDependencies?.ora).toBeUndefined()
   })
-})
+}, 60000)
 
 test("Adding package to optional dependencies works", async () => {
   await runInDirectory(async dir => {
@@ -43,7 +43,7 @@ test("Adding package to optional dependencies works", async () => {
     expect(packageJson.peerDependencies?.ora).toBeUndefined()
     expect(packageJson.optionalDependencies?.ora).toBeDefined()
   })
-})
+}, 60000)
 
 test("Adding package to peer dependencies works", async () => {
   await runInDirectory(async dir => {
@@ -55,7 +55,7 @@ test("Adding package to peer dependencies works", async () => {
     expect(packageJson.peerDependencies?.ora).toBeDefined()
     expect(packageJson.optionalDependencies?.ora).toBeUndefined()
   })
-})
+}, 60000)
 
 test("Adding an existing package to a different type of dependency moves them", async () => {
   await runInDirectory(async dir => {
@@ -68,4 +68,4 @@ test("Adding an existing package to a different type of dependency moves them", 
     expect(packageJsonB.dependencies?.ora).toBeDefined()
     expect(packageJsonB.devDependencies?.ora).toBeUndefined()
   })
-})
+}, 60000)

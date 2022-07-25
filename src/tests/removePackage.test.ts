@@ -13,7 +13,7 @@ test("Removing a package works", async () => {
     const packageJsonB = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
     expect(packageJsonB.dependencies?.lodash).toBeUndefined()
   })
-})
+}, 60000)
 
 test("Removing multiple package works", async () => {
   await runInDirectory(async dir => {
@@ -26,7 +26,7 @@ test("Removing multiple package works", async () => {
     expect(packageJsonB.dependencies?.lodash).toBeUndefined()
     expect(packageJsonB.dependencies?.underscore).toBeUndefined()
   })
-})
+}, 60000)
 
 test("Removing a package from a dev dependency works", async () => {
   await runInDirectory(async dir => {
@@ -39,7 +39,7 @@ test("Removing a package from a dev dependency works", async () => {
     expect(packageJsonB.dependencies?.lodash).toBeUndefined()
     expect(packageJsonB.devDependencies?.lodash).toBeUndefined()
   })
-})
+}, 60000)
 
 test("Removing a package with a type specified removes it only from that field", async () => {
   await runInDirectory(async dir => {
@@ -63,7 +63,7 @@ test("Removing a package with a type specified removes it only from that field",
     expect(packageJsonB.dependencies?.lodash).toBeUndefined()
     expect(packageJsonB.devDependencies?.lodash).toBeUndefined()
   })
-})
+}, 60000)
 
 test("Removing packages without specifying the type of dependency removes them from all dependencies", async () => {
   await runInDirectory(async dir => {
@@ -89,7 +89,7 @@ test("Removing packages without specifying the type of dependency removes them f
       packageJsonB.peerDependencies === undefined || Object.entries(packageJsonB.peerDependencies).length === 0
     ).toBeTruthy()
   })
-})
+}, 60000)
 
 test("Removing a package from a peer dependency keeps it in the dev dependencies", async () => {})
 
@@ -106,7 +106,7 @@ test("Removing a dependency that is also a peer dependency also removes it as a 
     expect(packageJsonB.devDependencies?.lodash).toBeUndefined()
     expect(packageJsonB.peerDependencies?.lodash).toBeUndefined()
   })
-})
+}, 60000)
 
 test("Removing a dependency with the wrong type keeps the peer dependency", async () => {
   await runInDirectory(async dir => {
@@ -121,4 +121,4 @@ test("Removing a dependency with the wrong type keeps the peer dependency", asyn
     expect(packageJsonB.devDependencies?.lodash).toBeDefined()
     expect(packageJsonB.peerDependencies?.lodash).toBeDefined()
   })
-})
+}, 60000)
