@@ -11,9 +11,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: sudo mkdir -p /nix
+      - uses: cachix/install-nix-action@v17
+        with:
+          nix_path: nixpkgs=channel:nixos-22.05
+      - run: sudo stat /nix/store
         shell: bash
-      - run: sudo mkdir -p /nix/store && sudo chown -R $USER /nix && sudo chmod -R a+rwx /nix
+      - run: |-
+          sudo rm -rf /nix/store && sudo mkdir -p /nix/store && sudo chown -R $USER /nix/store && sudo chmod -R a+rwx /nix/store
         shell: bash
       - name: Cache nix
         id: cache-nix-nix
@@ -21,19 +25,14 @@ jobs:
         with:
           path: /nix/store
           key: storenixb
-      - run: sudo stat /nix
+      - run: sudo stat /nix/store
         shell: bash
-      - run: sudo chown -R root:30000 /nix
+      - run: sudo chown -R root:30000 /nix/store
         shell: bash
-      - run: sudo stat /nix
+      - run: sudo stat /nix/store
         shell: bash
-      - uses: cachix/install-nix-action@v17
-        with:
-          nix_path: nixpkgs=channel:nixos-22.05
-
       - run: pnpm install
       - run: pnpm test
-
       - run: ls /nix -a
       - run: stat /nix
       - run: stat /nix/store
