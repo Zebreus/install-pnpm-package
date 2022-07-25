@@ -28,7 +28,7 @@ jobs:
       - run: sudo stat /nix/store
         shell: bash
       - run: |-
-          sudo chown root:30000 /nix/store && chown root:0 /nix/store/* && sudo chmod 1775 /nix/store && sudo chmod -R a-w /nix/store
+          chown -R root:0 /nix/store && sudo chown root:30000 /nix/store && sudo chmod 1775 /nix/store && sudo chmod -R a-w /nix/store
         shell: bash
       - run: sudo stat /nix/store
         shell: bash
