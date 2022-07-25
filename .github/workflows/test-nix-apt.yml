@@ -13,12 +13,18 @@ jobs:
       - uses: actions/checkout@v3
       - run: sudo mkdir -p /nix/store && sudo chown -R $USER /nix && chmod -R a+rwx /nix
         shell: bash
+      # - name: Cache nix store
+      #   id: cache-nix
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: /nix/store
+      #     key: nix-store
       - name: Cache nix directory
         id: cache-nix
         uses: actions/cache@v3
         with:
-          path: /nix/store
-          key: nix-store
+          path: /nix
+          key: nix-dir
       - name: Install nix
         uses: awalsh128/cache-apt-pkgs-action@v1.1.0
         with:
