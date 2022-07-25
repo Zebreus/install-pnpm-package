@@ -21,7 +21,19 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-22.05
       - name: shelltest
-        run: echo hi
-        shell: bash -c 'echo {0}'
+        run: echo hi && echo $0 $1
+        shell: /bin/sh {0}
+        continue-on-error: true
+      - name: shelltest 2
+        run: echo hi && echo $0 $1
+        shell: /bin/sh -c "echo {0} "
+        continue-on-error: true
+      - name: shelltest 3
+        run: echo hi && echo $0 $1
+        shell: /bin/sh
+      - name: shelltest 4
+        run: echo hi && echo $0 $1
+        shell: /bin/sh -c "/bin/sh {0}"
+        continue-on-error: true
       - run: pnpm install
       - run: pnpm test

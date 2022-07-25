@@ -28,9 +28,9 @@ jobs:
       - run: cat /etc/nix/nix.conf
         shell: bash
 
-      - run: nix-channel --add https://nixos.org/channels/nixos-22.05 nixpkgs
+      - run: sudo nix-channel --add https://nixos.org/channels/nixos-22.05 nixpkgs
         shell: bash
-      - run: nix-channel --update
+      - run: sudo nix-channel --update
         shell: bash
 
       - run: pnpm install
