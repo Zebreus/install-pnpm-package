@@ -11,67 +11,30 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Cache nix store
+      - name: Cache nix directory
         id: cache-nix
         uses: actions/cache@v3
         with:
           path: /nix/store
           key: nix-store
-      - uses: awalsh128/cache-apt-pkgs-action@v1.1.0
+      - name: Install nix
+        uses: awalsh128/cache-apt-pkgs-action@v1.1.0
         with:
           packages: nix-setup-systemd nix-bin
-          version: 3
-      - run: whoami
-        shell: bash
-      - name: shelltest
-        run: echo hi && echo $0 $1
-        shell: /bin/sh {0}
-        continue-on-error: true
-      - name: shelltest 2
-        run: echo hi && echo $0 $1
-        shell: /bin/sh -c "echo {0} "
-        continue-on-error: true
-      - name: shelltest 3
-        run: echo hi && echo $0 $1
-        shell: /bin/sh -c "/bin/sh {0}"
-        continue-on-error: true
-      - name: shelltest 4
-        run: echo hi && echo $0 $1
-        shell: /bin/sh -c "/bin/sh {0}.sh"
-        continue-on-error: true
-      - name: shelltest 5
-        run: echo hi && echo $0 $1
-        shell: /bin/sh -c "ls $(basename {0})"
-        continue-on-error: true
-      - name: shelltest 6
-        run: echo hi && echo $0 $1
-        shell: nix-shell --run "echo {0}"
-        continue-on-error: true
-      - name: shelltest 7
-        run: echo hi && echo $0 $1
-        shell: nix-shell --run "/bin/sh {0}"
-        continue-on-error: true
-      - name: shelltest
-        run: export
-        shell: /bin/sh {0}
-        continue-on-error: true
-      - run: |-
-          echo "trusted-users = root $USER" | sudo tee -a /etc/nix/nix.conf
-          echo "max-jobs = auto" | sudo tee -a /etc/nix/nix.conf
-          sudo gpasswd -a $USER nix-users
-          sudo chown -R $USER /nix
+          version: 4
+      - name: Add nix channel
+        run: |-
           sudo nix-channel --add https://nixos.org/channels/nixos-22.05 nixpkgs
           sudo nix-channel --update
+        if: steps.cache-nix.outputs.cache-hit != 'true'
+        shell: bash
+      - name: Setup nix permissions
+        run: |-
+          echo "trusted-users = root $USER" | sudo tee -a /etc/nix/nix.conf
+          echo "max-jobs = auto" | sudo tee -a /etc/nix/nix.conf
           sudo chown -R $USER /nix
           sudo chmod -R 0755 /etc/nix
         shell: bash
-        continue-on-error: true
 
       - run: pnpm install
-        continue-on-error: true
       - run: pnpm test
-        continue-on-error: true
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        timeout-minutes: 10
-        continue-on-error: true
