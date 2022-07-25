@@ -34,7 +34,7 @@ jobs:
         shell: bash
       - name: Add nix channel
         run: |-
-          apt install nix --yes
+          sudo apt install nix --yes
           # echo "build-users-group = nixbld"  | sudo tee -a /etc/nix/nix.conf
           sudo nix-channel --add https://nixos.org/channels/nixos-22.05 nixpkgs
           sudo nix-channel --update
