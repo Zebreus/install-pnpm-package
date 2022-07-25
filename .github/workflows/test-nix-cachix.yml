@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /nix/store
-          key: storenixb
+          key: funkey
       - run: sudo stat /nix/store
         shell: bash
       - run: sudo chown -R root:30000 /nix/store
