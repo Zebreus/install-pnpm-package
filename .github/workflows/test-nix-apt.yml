@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: sudo mkdir -p /nix
+      - run: sudo mkdir -p /nix/store && sudo chown -R $USER /nix && chmod -R a+rwx /nix
         shell: bash
       - name: Cache nix directory
         id: cache-nix
@@ -24,7 +24,7 @@ jobs:
         with:
           packages: nix-setup-systemd nix-bin
           version: 4
-      - run: sudo mkdir -p /nix
+      - run: sudo mkdir -p /nix/store && sudo chown -R $USER /nix && chmod -R a+rwx /nix
         shell: bash
       - name: Add nix channel
         run: |-
