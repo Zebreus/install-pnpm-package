@@ -11,7 +11,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: sudo mkdir -p /nix && sudo chown -R $USER /nix && chmod -R a+rxy /nix
+      - run: sudo mkdir -p /nix
+        shell: bash
       - name: Cache nix directory
         id: cache-nix
         uses: actions/cache@v3
@@ -23,7 +24,8 @@ jobs:
         with:
           packages: nix-setup-systemd nix-bin
           version: 4
-      - run: sudo mkdir -p /nix && sudo chown -R $USER /nix && chmod -R a+rxy /nix
+      - run: sudo mkdir -p /nix
+        shell: bash
       - name: Add nix channel
         run: |-
           echo "build-users-group ="  | sudo tee -a /etc/nix/nix.conf

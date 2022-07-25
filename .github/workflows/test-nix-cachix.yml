@@ -11,15 +11,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - run: sudo mkdir -p /nix
+        shell: bash
       - name: Cache nix
         id: cache-nix-nix
         uses: actions/cache@v3
         with:
-          path: /nix
-          key: storenix
+          path: /nix/store
+          key: storenixb
       - uses: cachix/install-nix-action@v17
         with:
           nix_path: nixpkgs=channel:nixos-22.05
 
       - run: pnpm install
       - run: pnpm test
+
+      - run: ls /nix -a
