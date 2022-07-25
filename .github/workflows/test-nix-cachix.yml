@@ -29,6 +29,8 @@ jobs:
         with:
           path: /nix/store
           key: funkeyb
+      - run: stat  /nix/store/069i7sasmcvwxwz3dx2g55xmnl38zjb1-openssl-1.1.1q-dev || true
+        shell: bash
       - run: sudo stat /nix/store  && sudo ls /nix/store | wc
         shell: bash
       - name: Move files back
@@ -41,8 +43,13 @@ jobs:
         shell: bash
       - run: sudo stat /nix/store && sudo ls /nix/store | wc
         shell: bash
+      - run: stat  /nix/store/069i7sasmcvwxwz3dx2g55xmnl38zjb1-openssl-1.1.1q-dev || true
+        shell: bash
       - run: pnpm install
+      - run: stat  /nix/store/069i7sasmcvwxwz3dx2g55xmnl38zjb1-openssl-1.1.1q-dev || true
+        shell: bash
       - run: pnpm test
       - run: ls /nix -a
       - run: stat /nix
-      - run: stat /nix/store
+      - run: stat  /nix/store/069i7sasmcvwxwz3dx2g55xmnl38zjb1-openssl-1.1.1q-dev || true
+        shell: bash
