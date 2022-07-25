@@ -27,7 +27,7 @@ jobs:
         with:
           path: /nix/store
           key: funkey
-      - run: sudo mkdir -p /nix/store && sudo mv -f /storetmp/* /nix/store
+      - run: sudo mkdir -p /nix/store && sudo mv -n /storetmp/* /nix/store
         shell: bash
       - run: sudo stat /nix/store
         shell: bash
