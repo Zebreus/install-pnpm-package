@@ -7,28 +7,49 @@ Does not require pnpm to be installed, as it uses `@pnpm/core` directly. This wa
 # Usage
 
 ```typescript
-import { addPackage } from "install-pnpm-package"
+import { addPackage, removePackage } from "install-pnpm-package"
 
-// Install a node module
+// Install a node package
 await addPackage("lodash")
 
-// Install multiple node modules
+// Remove a node package
+await removePackage("lodash")
+
+// Install multiple packages
 await addPackage(["lodash", "underscore", "ramda"])
 
-// Install a node module into a project in /projects/my-project
+// Install a package into a project in /projects/my-project
 await addPackage("lodash", { directory: "/projects/my-project" })
 
-// Install a node module into the project into the working directory
+// Install a package into the project into the working directory
 await addPackage("lodash")
 
-// Install a node module as devDependencies
+// Install a package as devDependencies
 await addPackage("lodash", { type: "dev" })
 
-// Install a node module as peerDependencies
+// Install a package as peerDependencies (and devDependencies)
 await addPackage("lodash", { type: "peer" })
 
-// Install a node module as optionalDependencies
+// Install a package as optionalDependencies
 await addPackage("lodash", { type: "optional" })
+
+// Remove multiple packages
+await removePackage(["lodash", "underscore", "ramda"])
+
+// Remove a package from a project in /projects/my-project
+await removePackage("lodash", { directory: "/projects/my-project" })
+
+// Remove a package from dependencies, devDependencies, optionalDependencies and peerDependencies
+await removePackage("lodash")
+
+// Remove a package only from dependencies
+await removePackage("lodash", { type: "normal" })
+
+// Remove a package only from devDependencies
+await removePackage("lodash", { type: "dev" })
+
+// You can basically combine all operations above, e.g. remove multiple modules from devDependencies from a package in /projects/my-project
+await removePackage(["lodash", "underscore"], { directory: "/projects/my-project", type: "dev" })
 ```
 
 # Background
