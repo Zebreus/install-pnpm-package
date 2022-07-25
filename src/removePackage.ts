@@ -5,13 +5,15 @@ import { createOrConnectStoreController } from "@pnpm/store-connection-manager"
 import writeProjectManifest from "@pnpm/write-project-manifest"
 import path from "path"
 
-type AddPackagesOptions = {
-  /** The directory of the project where the packages will be added
+type RemovePackageOptions = {
+  /** The directory of the project from which the packages will be removed
    *
    * @default process.cwd()
    */
   directory?: string
-  /** Specify the type of dependency. Peer dependencys also get added to the dev dependencies.
+  /** Specify the type of dependency. To remove peer dependencies you have to keep thsi empty or select all
+   *
+   * `all` =>  `dependencies` & `devDependencies` & `optionalDependencies` & `peerDependencies`
    *
    * `normal` => `dependencies`
    *
@@ -19,17 +21,15 @@ type AddPackagesOptions = {
    *
    * `optional` => `optionalDependencies`
    *
-   * `peer` => `peerDependencies` __&__ `devDependencies`
-   *
-   * @default "normal"
+   * @default "all"
    */
-  type?: "normal" | "dev" | "optional" | "peer"
+  type?: "all" | "normal" | "dev" | "optional"
 }
 
-export const addPackages = async (packages: string | string[], options?: AddPackagesOptions) => {
+export const removePackage = async (packages: string | string[], options?: RemovePackageOptions) => {
   const packagesArray = Array.isArray(packages) ? packages : [packages]
   const directory = options?.directory ?? process.cwd()
-  const type = options?.type ?? "normal"
+  const type = options?.type ?? "all"
 
   const { manifest, fileName } = await readProjectManifest(directory)
 
@@ -54,19 +54,16 @@ export const addPackages = async (packages: string | string[], options?: AddPack
     [
       {
         manifest: manifest,
-        allowNew: true,
-        dependencySelectors: packagesArray,
+        dependencyNames: packagesArray,
         targetDependenciesField:
-          type === "dev"
+          type === "all"
+            ? undefined
+            : type === "dev"
             ? "devDependencies"
             : type === "optional"
             ? "optionalDependencies"
-            : type === "peer"
-            ? "devDependencies"
             : "dependencies",
-        mutation: "installSome",
-        peer: type === "peer",
-        pruneDirectDependencies: true,
+        mutation: "uninstallSome",
         rootDir: directory,
       },
     ],
@@ -79,6 +76,8 @@ export const addPackages = async (packages: string | string[], options?: AddPack
       lockfileDir: directory,
     }
   )
+
+  console.log(projects[0].peerDependencyIssues)
 
   await writeProjectManifest(path.resolve(directory, fileName), projects[0].manifest)
 }

@@ -1,15 +1,15 @@
-import { addPackages } from "addPackages"
+import { addPackage } from "addPackage"
 import { readFile } from "fs/promises"
 import path from "path"
-import { removePackages } from "removePackages"
+import { removePackage } from "removePackage"
 import { runInDirectory } from "tests/runInDirectory"
 
 test("Removing a package works", async () => {
   await runInDirectory(async dir => {
-    await expect(addPackages("lodash", { directory: dir })).resolves.not.toThrow()
+    await expect(addPackage("lodash", { directory: dir })).resolves.not.toThrow()
     const packageJsonA = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
     expect(packageJsonA.dependencies?.lodash).toBeDefined()
-    await expect(removePackages("lodash", { directory: dir })).resolves.not.toThrow()
+    await expect(removePackage("lodash", { directory: dir })).resolves.not.toThrow()
     const packageJsonB = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
     expect(packageJsonB.dependencies?.lodash).toBeUndefined()
   })
@@ -17,11 +17,11 @@ test("Removing a package works", async () => {
 
 test("Removing multiple package works", async () => {
   await runInDirectory(async dir => {
-    await expect(addPackages(["lodash", "underscore"], { directory: dir })).resolves.not.toThrow()
+    await expect(addPackage(["lodash", "underscore"], { directory: dir })).resolves.not.toThrow()
     const packageJsonA = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
     expect(packageJsonA.dependencies?.lodash).toBeDefined()
     expect(packageJsonA.dependencies?.underscore).toBeDefined()
-    await expect(removePackages(["lodash", "underscore"], { directory: dir })).resolves.not.toThrow()
+    await expect(removePackage(["lodash", "underscore"], { directory: dir })).resolves.not.toThrow()
     const packageJsonB = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
     expect(packageJsonB.dependencies?.lodash).toBeUndefined()
     expect(packageJsonB.dependencies?.underscore).toBeUndefined()
@@ -30,11 +30,11 @@ test("Removing multiple package works", async () => {
 
 test("Removing a package from a dev dependency works", async () => {
   await runInDirectory(async dir => {
-    await expect(addPackages("lodash", { directory: dir, type: "dev" })).resolves.not.toThrow()
+    await expect(addPackage("lodash", { directory: dir, type: "dev" })).resolves.not.toThrow()
     const packageJsonA = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
     expect(packageJsonA.dependencies?.lodash).toBeUndefined()
     expect(packageJsonA.devDependencies?.lodash).toBeDefined()
-    await expect(removePackages("lodash", { directory: dir, type: "dev" })).resolves.not.toThrow()
+    await expect(removePackage("lodash", { directory: dir, type: "dev" })).resolves.not.toThrow()
     const packageJsonB = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
     expect(packageJsonB.dependencies?.lodash).toBeUndefined()
     expect(packageJsonB.devDependencies?.lodash).toBeUndefined()
@@ -43,22 +43,22 @@ test("Removing a package from a dev dependency works", async () => {
 
 test("Removing a package with a type specified removes it only from that field", async () => {
   await runInDirectory(async dir => {
-    await expect(addPackages("lodash", { directory: dir, type: "normal" })).resolves.not.toThrow()
+    await expect(addPackage("lodash", { directory: dir, type: "normal" })).resolves.not.toThrow()
     const packageJsonA = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
     expect(packageJsonA.dependencies?.lodash).toBeDefined()
     expect(packageJsonA.devDependencies?.lodash).toBeUndefined()
-    await expect(removePackages("lodash", { directory: dir, type: "dev" })).resolves.not.toThrow()
+    await expect(removePackage("lodash", { directory: dir, type: "dev" })).resolves.not.toThrow()
     const packageJsonB = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
     expect(packageJsonB.dependencies?.lodash).toBeDefined()
     expect(packageJsonB.devDependencies?.lodash).toBeUndefined()
   })
 
   await runInDirectory(async dir => {
-    await expect(addPackages("lodash", { directory: dir, type: "normal" })).resolves.not.toThrow()
+    await expect(addPackage("lodash", { directory: dir, type: "normal" })).resolves.not.toThrow()
     const packageJsonA = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
     expect(packageJsonA.dependencies?.lodash).toBeDefined()
     expect(packageJsonA.devDependencies?.lodash).toBeUndefined()
-    await expect(removePackages("lodash", { directory: dir })).resolves.not.toThrow()
+    await expect(removePackage("lodash", { directory: dir })).resolves.not.toThrow()
     const packageJsonB = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
     expect(packageJsonB.dependencies?.lodash).toBeUndefined()
     expect(packageJsonB.devDependencies?.lodash).toBeUndefined()
@@ -67,14 +67,14 @@ test("Removing a package with a type specified removes it only from that field",
 
 test("Removing packages without specifying the type of dependency removes them from all dependencies", async () => {
   await runInDirectory(async dir => {
-    await expect(addPackages("lodash", { directory: dir, type: "normal" })).resolves.not.toThrow()
-    await expect(addPackages("underscore", { directory: dir, type: "dev" })).resolves.not.toThrow()
-    await expect(addPackages("ramda", { directory: dir, type: "optional" })).resolves.not.toThrow()
-    await expect(addPackages("ora", { directory: dir, type: "peer" })).resolves.not.toThrow()
+    await expect(addPackage("lodash", { directory: dir, type: "normal" })).resolves.not.toThrow()
+    await expect(addPackage("underscore", { directory: dir, type: "dev" })).resolves.not.toThrow()
+    await expect(addPackage("ramda", { directory: dir, type: "optional" })).resolves.not.toThrow()
+    await expect(addPackage("ora", { directory: dir, type: "peer" })).resolves.not.toThrow()
     const packageJsonA = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
     expect(packageJsonA.dependencies?.lodash).toBeDefined()
     expect(packageJsonA.devDependencies?.lodash).toBeUndefined()
-    await expect(removePackages(["lodash", "underscore", "ramda", "ora"], { directory: dir })).resolves.not.toThrow()
+    await expect(removePackage(["lodash", "underscore", "ramda", "ora"], { directory: dir })).resolves.not.toThrow()
     const packageJsonB = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
     expect(
       packageJsonB.dependencies === undefined || Object.entries(packageJsonB.dependencies).length === 0
@@ -95,12 +95,12 @@ test("Removing a package from a peer dependency keeps it in the dev dependencies
 
 test("Removing a dependency that is also a peer dependency also removes it as a peer dependency", async () => {
   await runInDirectory(async dir => {
-    await expect(addPackages("lodash", { directory: dir, type: "peer" })).resolves.not.toThrow()
+    await expect(addPackage("lodash", { directory: dir, type: "peer" })).resolves.not.toThrow()
     const packageJsonA = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
     expect(packageJsonA.dependencies?.lodash).toBeUndefined()
     expect(packageJsonA.devDependencies?.lodash).toBeDefined()
     expect(packageJsonA.peerDependencies?.lodash).toBeDefined()
-    await expect(removePackages("lodash", { directory: dir, type: "dev" })).resolves.not.toThrow()
+    await expect(removePackage("lodash", { directory: dir, type: "dev" })).resolves.not.toThrow()
     const packageJsonB = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
     expect(packageJsonB.dependencies?.lodash).toBeUndefined()
     expect(packageJsonB.devDependencies?.lodash).toBeUndefined()
@@ -110,12 +110,12 @@ test("Removing a dependency that is also a peer dependency also removes it as a 
 
 test("Removing a dependency with the wrong type keeps the peer dependency", async () => {
   await runInDirectory(async dir => {
-    await expect(addPackages("lodash", { directory: dir, type: "peer" })).resolves.not.toThrow()
+    await expect(addPackage("lodash", { directory: dir, type: "peer" })).resolves.not.toThrow()
     const packageJsonA = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
     expect(packageJsonA.dependencies?.lodash).toBeUndefined()
     expect(packageJsonA.devDependencies?.lodash).toBeDefined()
     expect(packageJsonA.peerDependencies?.lodash).toBeDefined()
-    await expect(removePackages("lodash", { directory: dir, type: "normal" })).resolves.not.toThrow()
+    await expect(removePackage("lodash", { directory: dir, type: "normal" })).resolves.not.toThrow()
     const packageJsonB = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
     expect(packageJsonB.dependencies?.lodash).toBeUndefined()
     expect(packageJsonB.devDependencies?.lodash).toBeDefined()

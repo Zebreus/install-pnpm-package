@@ -5,15 +5,13 @@ import { createOrConnectStoreController } from "@pnpm/store-connection-manager"
 import writeProjectManifest from "@pnpm/write-project-manifest"
 import path from "path"
 
-type RemovePackagesOptions = {
-  /** The directory of the project from which the packages will be removed
+type AddPackageOptions = {
+  /** The directory of the project where the packages will be added
    *
    * @default process.cwd()
    */
   directory?: string
-  /** Specify the type of dependency. To remove peer dependencies you have to keep thsi empty or select all
-   *
-   * `all` =>  `dependencies` & `devDependencies` & `optionalDependencies` & `peerDependencies`
+  /** Specify the type of dependency. Peer dependencys also get added to the dev dependencies.
    *
    * `normal` => `dependencies`
    *
@@ -21,15 +19,17 @@ type RemovePackagesOptions = {
    *
    * `optional` => `optionalDependencies`
    *
-   * @default "all"
+   * `peer` => `peerDependencies` __&__ `devDependencies`
+   *
+   * @default "normal"
    */
-  type?: "all" | "normal" | "dev" | "optional"
+  type?: "normal" | "dev" | "optional" | "peer"
 }
 
-export const removePackages = async (packages: string | string[], options?: RemovePackagesOptions) => {
+export const addPackage = async (packages: string | string[], options?: AddPackageOptions) => {
   const packagesArray = Array.isArray(packages) ? packages : [packages]
   const directory = options?.directory ?? process.cwd()
-  const type = options?.type ?? "all"
+  const type = options?.type ?? "normal"
 
   const { manifest, fileName } = await readProjectManifest(directory)
 
@@ -54,16 +54,19 @@ export const removePackages = async (packages: string | string[], options?: Remo
     [
       {
         manifest: manifest,
-        dependencyNames: packagesArray,
+        allowNew: true,
+        dependencySelectors: packagesArray,
         targetDependenciesField:
-          type === "all"
-            ? undefined
-            : type === "dev"
+          type === "dev"
             ? "devDependencies"
             : type === "optional"
             ? "optionalDependencies"
+            : type === "peer"
+            ? "devDependencies"
             : "dependencies",
-        mutation: "uninstallSome",
+        mutation: "installSome",
+        peer: type === "peer",
+        pruneDirectDependencies: true,
         rootDir: directory,
       },
     ],
@@ -76,8 +79,6 @@ export const removePackages = async (packages: string | string[], options?: Remo
       lockfileDir: directory,
     }
   )
-
-  console.log(projects[0].peerDependencyIssues)
 
   await writeProjectManifest(path.resolve(directory, fileName), projects[0].manifest)
 }

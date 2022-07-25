@@ -1,2 +1,2 @@
-export { addPackages } from "addPackages"
-export { removePackages } from "removePackages"
+export { addPackage } from "addPackage"
+export { removePackage } from "removePackage"
