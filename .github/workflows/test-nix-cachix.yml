@@ -19,7 +19,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /nixcache/store /nixcache/nix.db
-          key: funkeyc1
+          key: funkeyc2
       - name: Install nix
         uses: cachix/install-nix-action@v17
         with:
@@ -34,8 +34,9 @@ jobs:
         uses: webiny/action-post-run@2.0.1
         id: prepare-cache
         with:
-          run: |-
-            bash -c 'sudo rm -rf /nixcache/store ; mkdir -p /nixcache/store ; nix-store --dump-db > /nixcache/nix.db ; sudo mv /nix/store/* /nixcache/store'
+          run:
+            bash -c 'sudo rm -rf /nixcache/store ; mkdir -p /nixcache/store ; nix-store --dump-db > /nixcache/nix.db ;
+            sudo mv /nix/store/* /nixcache/store'
 
       - run: pnpm install
       - run: pnpm test
