@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-22.04
     defaults:
       run:
-        shell: nix develop -c /usr/bin/bash --noprofile --norc -o pipefail -c "{0} ; exit"
+        shell: nix develop -c /usr/bin/bash --noprofile --norc -o pipefail {0}
         # shell: nix-shell --run "/usr/bin/bash --noprofile --norc -e -o pipefail {0}"
 
     steps:
@@ -22,7 +22,7 @@ jobs:
           path: |-
             /nixcache
             ~/.cache
-          key: funkeyz3
+          key: funkeyz4
       - name: Install nix
         uses: cachix/install-nix-action@v17
         with:
@@ -56,7 +56,7 @@ jobs:
           path: |-
             ${{ steps.pnpm-store.outputs.PNPM_STORE }}
             node_modules
-          key: funkeyz31
+          key: funkeyz41
 
       - run: pnpm install
       - run: pnpm test
