@@ -18,8 +18,8 @@ jobs:
         id: cache-nix-nix
         uses: actions/cache@v3
         with:
-          path: /nixcache/store /nixcache/nix.db
-          key: funkeyc2
+          path: /nixcache
+          key: funkeyc3
       - name: Install nix
         uses: cachix/install-nix-action@v17
         with:
@@ -35,8 +35,8 @@ jobs:
         id: prepare-cache
         with:
           run:
-            bash -c 'sudo rm -rf /nixcache/store ; mkdir -p /nixcache/store ; nix-store --dump-db > /nixcache/nix.db ;
-            sudo mv /nix/store/* /nixcache/store'
+            bash -c "sudo rm -rf /nixcache/store ; mkdir -p /nixcache/store ; nix-store --dump-db > /nixcache/nix.db ;
+            sudo mv /nix/store/* /nixcache/store"
 
       - run: pnpm install
       - run: pnpm test
