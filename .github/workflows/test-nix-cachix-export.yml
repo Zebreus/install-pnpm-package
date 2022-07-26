@@ -1,9 +1,9 @@
-name: Test nix install with nix installer
+name: Uses nix-store export
 
 on: [push]
 
 jobs:
-  nix-cachix:
+  nix-cachix-export:
     runs-on: ubuntu-22.04
     defaults:
       run:
@@ -12,14 +12,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Create cache dir
-        run: sudo mkdir -p /nixcache/store && sudo chown -R $USER /nixcache
+        run: sudo mkdir -p /nixcache && sudo chown -R $USER /nixcache
         shell: bash
       - name: Load cache
-        id: cache-nix-nix
+        id: cache-nix-export
         uses: actions/cache@v3
         with:
-          path: /nixcache/store /nixcache/nix.db
-          key: funkeyc
+          path: /nixcache/cache.nixstore
+          key: funkeyd
       - name: Install nix
         uses: cachix/install-nix-action@v17
         with:
@@ -27,7 +27,7 @@ jobs:
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
       - name: Restore cache
-        run: sudo mv -n /nixcache/store/* /nix/store ; sudo $(which nix-store) --load-db < /nixcache/nix.db
+        run: sudo $(which nix-store) --import < /nixcache/cache.nixstore
         if: steps.cache-nix-export.outputs.cache-hit = 'true'
         shell: bash
       - name: Setup postrun command to create cache
@@ -35,7 +35,7 @@ jobs:
         id: prepare-cache
         with:
           run: |-
-            sudo rm -rf /nixcache/store ; mkdir -p /nixcache/store ; nix-store --dump-db > /nixcache/nix.db ; sudo mv /nix/store/* /nixcache/store
+            sudo rm -rf /nixcache/cache.nixstore ; nix-store --export $(nix file-path --all) > /nixcache/cache.nixstore
 
       - run: pnpm install
       - run: pnpm test
