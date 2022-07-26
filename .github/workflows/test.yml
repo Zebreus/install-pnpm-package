@@ -1,0 +1,16 @@
+name: Test with jest
+
+on: [push]
+
+jobs:
+  test-local-action:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: nix develop -c /usr/bin/bash --noprofile --norc -o pipefail {0}
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/prepare-project
+
+      - run: pnpm test

@@ -1,0 +1,58 @@
+name: "Prepare the project"
+description: "Installs nix and pnpm dependencies"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install nix
+      uses: cachix/install-nix-action@v17
+      with:
+        nix_path: nixpkgs=channel:nixos-22.05
+    - name: Prepare nix cache
+      run: |-
+        sudo mkdir -p /nixcache/store && sudo chown -R $USER /nixcache
+        find /nix/store -mindepth 1 -maxdepth 1 > /nixcache/defaultstore.txt
+      shell: bash
+    - name: Download nix cache
+      id: cache-nix
+      uses: actions/cache@v3
+      with:
+        path: |-
+          /nixcache
+          ~/.cache
+        key: ${{ runner.os }}-nix-${{ hashFiles('**/flake.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-nix-
+    - name: Restore nix cache
+      run: |-
+        sudo mv -n /nixcache/store/* /nix/store
+        sudo $(which nix-store) --load-db < /nixcache/nix.db
+      if: steps.cache-nix.outputs.cache-hit == 'true'
+      shell: bash
+    - name: Setup postrun command for nix cache
+      if: steps.cache-nix.outputs.cache-hit != 'true'
+      uses: webiny/action-post-run@2.0.1
+      id: prepare-cache
+      with:
+        run:
+          bash -c "sudo rm -rf /nixcache/store ; mkdir -p /nixcache/store ; nix-store --dump-db > /nixcache/nix.db ; cat
+          /nixcache/defaultstore.txt | xargs sudo rm -rf ; sudo rm /nixcache/defaultstore.txt ; sudo mv /nix/store/*
+          /nixcache/store"
+    # - name: Get pnpm step
+    #   id: pnpm-store
+    #   run: |-
+    #     echo "::set-output name=PNPM_STORE::$(pnpm store path)"
+    - name: Load pnpm cache
+      id: cache-pnpm
+      uses: actions/cache@v3
+      with:
+        path: |-
+          # ${{ steps.pnpm-store.outputs.PNPM_STORE }}
+          ~/.local/share/pnpm/store/v3
+          node_modules
+        key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-
+    - name: pnpm install
+      run: nix develop -c pnpm install
+      shell: bash
