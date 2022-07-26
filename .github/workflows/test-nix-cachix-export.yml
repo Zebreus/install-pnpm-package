@@ -19,7 +19,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /nixcache/cache.nixstore
-          key: funkeyd
+          key: funkeyd1
       - name: Install nix
         uses: cachix/install-nix-action@v17
         with:
@@ -35,7 +35,7 @@ jobs:
         id: prepare-cache
         with:
           run: |-
-            sudo rm -rf /nixcache/cache.nixstore ; nix-store --export $(nix file-path --all) > /nixcache/cache.nixstore
+            bash -c 'sudo rm -rf /nixcache/cache.nixstore ; nix-store --export $(nix file-path --all) > /nixcache/cache.nixstore'
 
       - run: pnpm install
       - run: pnpm test
