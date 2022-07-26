@@ -19,7 +19,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /nixcache
-          key: funkeyc4
+          key: funkeyc7
       - name: Install nix
         uses: cachix/install-nix-action@v17
         with:
@@ -28,7 +28,7 @@ jobs:
       #   uses: mxschmitt/action-tmate@v3
       - name: Flag installed packages
         run: find /nix/store -mindepth 1 -maxdepth 1 > /nixcache/defaultstore.txt
-        if: steps.cache-nix-copy.outputs.cache-hit == 'true'
+        if: steps.cache-nix-copy.outputs.cache-hit != 'true'
         shell: bash
       - name: Restore cache
         run: sudo mv -n /nixcache/store/* /nix/store ; sudo $(which nix-store) --load-db < /nixcache/nix.db
