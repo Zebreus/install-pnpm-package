@@ -41,6 +41,8 @@ jobs:
           run:
             bash -c "sudo rm -rf /nixcache/store ; mkdir -p /nixcache/store ; nix-store --dump-db > /nixcache/nix.db ;
             sudo rm /nixcache/defaultstore.txt ; sudo mv /nix/store/* /nixcache/store"
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Find slow part bash
         run: |-
           time echo hi
