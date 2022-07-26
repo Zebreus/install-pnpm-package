@@ -53,6 +53,14 @@ runs:
         key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
         restore-keys: |
           ${{ runner.os }}-pnpm-
+    - run: |-
+        sudo cp -raf /bin/sh /bin/oldsh
+        sudo cp -raf /usr/bin/bash /usr/bin/oldbash
+      shell: sh
+    - run: |-
+        sudo printf '#!/bin/oldsh\nnix develop '"$(pwd)"' -c /usr/bin/oldbash "$@"' > /bin/sh > /usr/bin/bash
+        sudo chmod a+x /bin/sh /usr/bin/bash /usr/bin/sh
+      shell: /bin/oldsh {0}
     - name: pnpm install
-      run: nix develop -c pnpm install
+      run: pnpm install
       shell: bash

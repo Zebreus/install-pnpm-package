@@ -7,28 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     # defaults:
     #   run:
-    #     shell: bash
-    # shell: nix develop -c /usr/bin/bash --noprofile --norc -o pipefail {0}
+    #     shell: nix develop -c /usr/bin/bash --noprofile --norc -o pipefail {0}
 
     steps:
       - uses: actions/checkout@v3
-      # - uses: ./.github/actions/prepare-project
+      - uses: ./.github/actions/prepare-project
 
-      - run: |-
-          ls /bin | grep sh
-          echo /usr/bin
-          ls /usr/bin | grep sh
-          sudo cp -raf /bin/sh /bin/oldsh
-        shell: sh
-      - run: |-
-          ls /bin | grep sh
-          echo /usr/bin
-          ls /usr/bin | grep sh
-          sudo cp -raf /bin/sh /bin/oldsh
-          sudo echo "lkjfsaf" | sudo tee /bin/sh
-          sudo echo "lkjfsaf" | sudo tee /usr/bin/sh
-          sudo echo "lkjfsaf" | sudo tee /usr/bin/bash
-        shell: /bin/oldsh {0}
-      - run: |-
-          echo hi
-      # - run: pnpm test
+      - run: pnpm test
