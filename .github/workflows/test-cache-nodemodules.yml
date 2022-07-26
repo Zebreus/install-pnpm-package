@@ -18,7 +18,9 @@ jobs:
         id: cache-nix-copy
         uses: actions/cache@v3
         with:
-          path: /nixcache
+          path: |-
+            /nixcache
+            ~/.cache
           key: funkeyy1
       - name: Install nix
         uses: cachix/install-nix-action@v17
@@ -49,5 +51,18 @@ jobs:
           path: node_modules
           key: funkeyy11
 
+      - run: date
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: date
       - run: pnpm install
       - run: pnpm test

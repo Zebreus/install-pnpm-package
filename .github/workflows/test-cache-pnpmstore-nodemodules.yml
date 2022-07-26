@@ -58,5 +58,18 @@ jobs:
             node_modules
           key: funkeyz41
 
+      - run: date
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: echo aaaaa
+      - run: date
       - run: pnpm install
       - run: pnpm test
