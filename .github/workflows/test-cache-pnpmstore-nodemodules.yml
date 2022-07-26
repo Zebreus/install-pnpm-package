@@ -42,12 +42,18 @@ jobs:
             bash -c "sudo rm -rf /nixcache/store ; mkdir -p /nixcache/store ; nix-store --dump-db > /nixcache/nix.db ;
             cat /nixcache/defaultstore.txt | xargs sudo rm -rf ; sudo rm /nixcache/defaultstore.txt ; sudo mv
             /nix/store/* /nixcache/store"
+      - name: Find slow part
+        id: pnpm-store
+        run: |-
+          time echo hi
+          date
       - name: Get pnpm step
         id: pnpm-store
         run: |-
-          echo hi
-          pnpm store path
+          time echo hi
+          time pnpm store path
           echo "::set-output name=PNPM_STORE::$(pnpm store path)"
+          time echo hi
       - name: Pnpm cache
         id: cache-pnpm-store
         uses: actions/cache@v3
