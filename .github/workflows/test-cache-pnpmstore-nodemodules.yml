@@ -42,9 +42,18 @@ jobs:
             bash -c "sudo rm -rf /nixcache/store ; mkdir -p /nixcache/store ; nix-store --dump-db > /nixcache/nix.db ;
             cat /nixcache/defaultstore.txt | xargs sudo rm -rf ; sudo rm /nixcache/defaultstore.txt ; sudo mv
             /nix/store/* /nixcache/store"
-      - name: Find slow part
+      - name: Find slow part bash
         run: |-
           time echo hi
+          date
+          time nix-shell --run "time echo ho"
+          date
+        shell: bash
+      - name: Find slow part nixshell
+        run: |-
+          time echo hi
+          date
+          time nix-shell --run "time echo ho"
           date
       - name: Get pnpm step
         run: |-
