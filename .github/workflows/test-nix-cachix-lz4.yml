@@ -19,7 +19,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /nixcache
-          key: funkeyf4
+          key: funkeyf5
       - name: Install nix
         uses: cachix/install-nix-action@v17
         with:
@@ -37,8 +37,8 @@ jobs:
         id: prepare-cache
         with:
           run:
-            bash -c "sudo rm -rf /nixcache/store.tar.lz4 ; nix-store --dump-db > /nixcache/nix.db ; sudo $(which
-            nix-shell) -p lz4 --run \"tar -I lz4 -cf /nixcache/store.tar.lz4 /nix/store\""
+            bash -c "sudo rm -rf /nixcache/store.tar.lz4 ; nix-store --dump-db > /nixcache/nix.db ; LZ4=$(nix-shell -p
+            lz4 --run \"which lz4\") ; sudo tar -I $LZ4 -cf /nixcache/store.tar.lz4 /nix/store"
 
       - run: pnpm install
       - run: pnpm test
