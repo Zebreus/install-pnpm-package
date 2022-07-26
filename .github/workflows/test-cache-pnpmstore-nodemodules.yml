@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   cache-pnpm-nodemodules:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: nix develop -c /usr/bin/bash --noprofile --norc -o pipefail {0}
