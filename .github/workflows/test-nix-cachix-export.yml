@@ -24,8 +24,8 @@ jobs:
         uses: cachix/install-nix-action@v17
         with:
           nix_path: nixpkgs=channel:nixos-22.05
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
       - name: Restore cache
         run: sudo $(which nix-store) --import < /nixcache/cache.nixstore
         if: steps.cache-nix-export.outputs.cache-hit == 'true'

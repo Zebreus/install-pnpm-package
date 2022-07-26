@@ -15,7 +15,7 @@ jobs:
         run: sudo mkdir -p /nixcache/store && sudo chown -R $USER /nixcache
         shell: bash
       - name: Load cache
-        id: cache-nix-nix
+        id: cache-nix-copy
         uses: actions/cache@v3
         with:
           path: /nixcache
@@ -28,7 +28,7 @@ jobs:
       #   uses: mxschmitt/action-tmate@v3
       - name: Restore cache
         run: sudo mv -n /nixcache/store/* /nix/store ; sudo $(which nix-store) --load-db < /nixcache/nix.db
-        if: steps.cache-nix-export.outputs.cache-hit == 'true'
+        if: steps.cache-nix-copy.outputs.cache-hit == 'true'
         shell: bash
       - name: Setup postrun command to create cache
         uses: webiny/action-post-run@2.0.1
