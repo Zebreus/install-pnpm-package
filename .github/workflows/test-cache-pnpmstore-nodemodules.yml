@@ -44,10 +44,10 @@ jobs:
             /nix/store/* /nixcache/store"
       - name: Get pnpm step
         id: pnpm-store
-        run: >-
-          echo "::set-output name=PNPM_STORE::$(
-            pnpm store path
-          )"
+        run: |-
+          echo hi
+          pnpm store path
+          echo "::set-output name=PNPM_STORE::$(pnpm store path)"
       - name: Pnpm cache
         id: cache-pnpm-store
         uses: actions/cache@v3
