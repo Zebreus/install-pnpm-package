@@ -1,0 +1,44 @@
+name: Uses tarball without compression
+
+on: [push]
+
+jobs:
+  nix-cachix-tar:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: nix-shell --run "/usr/bin/bash --noprofile --norc -e -o pipefail {0}"
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create cache dir
+        run: sudo mkdir -p /nixcache && sudo chown -R $USER /nixcache
+        shell: bash
+      - name: Load cache
+        id: cache-nix-copy
+        uses: actions/cache@v3
+        with:
+          path: /nixcache
+          key: funkeyg5
+      - name: Install nix
+        uses: cachix/install-nix-action@v17
+        with:
+          nix_path: nixpkgs=channel:nixos-22.05
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      - name: Restore cache
+        run: |-
+          sudo tar --same-owner --directory / -xf /nixcache/store.tar
+          sudo $(which nix-store) --load-db < /nixcache/nix.db
+        if: steps.cache-nix-copy.outputs.cache-hit == 'true'
+        shell: bash
+      - name: Setup postrun command to create cache
+        uses: webiny/action-post-run@2.0.1
+        id: prepare-cache
+        with:
+          run:
+            bash -c "sudo rm -rf /nixcache/store.tar ; nix-store --dump-db > /nixcache/nix.db ; sudo tar -cf
+            /nixcache/store.tar /nix/store"
+
+      - run: pnpm install
+      - run: pnpm test
