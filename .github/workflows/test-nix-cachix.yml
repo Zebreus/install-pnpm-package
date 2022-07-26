@@ -15,6 +15,8 @@ jobs:
         uses: cachix/install-nix-action@v17
         with:
           nix_path: nixpkgs=channel:nixos-22.05
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - run: sudo nix-store --verify --repair --check-contents
         shell: bash
       - name: Move files away
