@@ -28,7 +28,7 @@ jobs:
       #   uses: mxschmitt/action-tmate@v3
       - name: Restore cache
         run: sudo $(which nix-store) --import < /nixcache/cache.nixstore
-        if: steps.cache-nix-export.outputs.cache-hit = 'true'
+        if: steps.cache-nix-export.outputs.cache-hit == 'true'
         shell: bash
       - name: Setup postrun command to create cache
         uses: webiny/action-post-run@2.0.1
