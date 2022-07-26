@@ -18,7 +18,9 @@ jobs:
         id: cache-nix-copy
         uses: actions/cache@v3
         with:
-          path: /nixcache
+          path: |-
+            /nixcache
+            ~/.cache
           key: funkeyz2
       - name: Install nix
         uses: cachix/install-nix-action@v17
@@ -41,16 +43,16 @@ jobs:
           run:
             bash -c "sudo rm -rf /nixcache/store ; mkdir -p /nixcache/store ; nix-store --dump-db > /nixcache/nix.db ;
             sudo rm /nixcache/defaultstore.txt ; sudo mv /nix/store/* /nixcache/store"
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-      - name: Find slow part bash
-        run: |-
-          time echo hi
-          date
-          time nix-shell -vvv --run "time echo ho"
-          time nix-shell --run "time echo ho"
-          date
-        shell: bash
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      # - name: Find slow part bash
+      #   run: |-
+      #     time echo hi
+      #     date
+      #     time nix-shell -vvv --run "time echo ho"
+      #     time nix-shell --run "time echo ho"
+      #     date
+      #   shell: bash
       - name: Find slow part nixshell
         run: |-
           time echo hi
