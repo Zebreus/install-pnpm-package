@@ -45,6 +45,7 @@ jobs:
         run: |-
           time echo hi
           date
+          time nix-shell -vvv --run "time echo ho"
           time nix-shell --run "time echo ho"
           date
         shell: bash
