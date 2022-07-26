@@ -19,7 +19,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /nixcache/cache.nixstore
-          key: funkeyd1
+          key: funkeyd2
       - name: Install nix
         uses: cachix/install-nix-action@v17
         with:
@@ -32,10 +32,35 @@ jobs:
         shell: bash
       - name: Setup postrun command to create cache
         uses: webiny/action-post-run@2.0.1
-        id: prepare-cache
+        id: prepare-cache-a
         with:
           run: |-
             bash -c 'sudo rm -rf /nixcache/cache.nixstore ; nix-store --export $(nix file-path --all) > /nixcache/cache.nixstore'
+      - name: Setup postrun B
+        uses: webiny/action-post-run@2.0.1
+        id: prepare-cache-b
+        with:
+          run: |-
+            bash -c "sudo rm -rf /nixcache/cache.nixstore ; nix-store --export $(nix file-path --all) > /nixcache/cache.nixstore"
+      - name: Setup postrun C
+        uses: webiny/action-post-run@2.0.1
+        id: prepare-cache-c
+        with:
+          run:
+            'bash -c "sudo rm -rf /nixcache/cache.nixstore ; nix-store --export $(nix file-path --all) >
+            /nixcache/cache.nixstore"'
+      - name: Setup postrun D
+        uses: webiny/action-post-run@2.0.1
+        id: prepare-cache-d
+        with:
+          run: |-
+            /bin/sh -c 'sudo rm -rf /nixcache/cache.nixstore && nix-store --export $(nix file-path --all) > /nixcache/cache.nixstore'
+      - name: Setup postrun E
+        uses: webiny/action-post-run@2.0.1
+        id: prepare-cache-e
+        with:
+          run: |-
+            /bin/sh -c 'sh -c "sudo rm -rf /nixcache/cache.nixstore" && sh -c "nix-store --export $(nix file-path --all) > /nixcache/cache.nixstore"'
 
       - run: pnpm install
       - run: pnpm test
