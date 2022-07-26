@@ -1,13 +1,10 @@
-name: Test with jest
+name: Run tests
 
 on: [push]
 
 jobs:
-  test-local-action:
+  run-tests:
     runs-on: ubuntu-latest
-    # defaults:
-    #   run:
-    #     shell: nix develop -c /usr/bin/bash --noprofile --norc -o pipefail {0}
 
     steps:
       - uses: actions/checkout@v3

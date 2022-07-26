@@ -38,16 +38,11 @@ runs:
           bash -c "sudo rm -rf /nixcache/store ; mkdir -p /nixcache/store ; nix-store --dump-db > /nixcache/nix.db ; cat
           /nixcache/defaultstore.txt | xargs sudo rm -rf ; sudo rm /nixcache/defaultstore.txt ; sudo mv /nix/store/*
           /nixcache/store"
-    # - name: Get pnpm step
-    #   id: pnpm-store
-    #   run: |-
-    #     echo "::set-output name=PNPM_STORE::$(pnpm store path)"
     - name: Load pnpm cache
       id: cache-pnpm
       uses: actions/cache@v3
       with:
         path: |-
-          # ${{ steps.pnpm-store.outputs.PNPM_STORE }}
           ~/.local/share/pnpm/store/v3
           node_modules
         key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
