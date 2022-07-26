@@ -1,9 +1,9 @@
-name: Test nix install with nix installer
+name: Test pnpm with cached pnpm store
 
 on: [push]
 
 jobs:
-  nix-cachix:
+  cache-pnpm:
     runs-on: ubuntu-22.04
     defaults:
       run:
@@ -19,19 +19,19 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /nixcache
-          key: funkeyc7
+          key: funkeyx1
       - name: Install nix
         uses: cachix/install-nix-action@v17
         with:
           nix_path: nixpkgs=channel:nixos-22.05
-      # - name: Setup tmate session
-      #   uses: mxschmitt/action-tmate@v3
       - name: Flag installed packages
         run: find /nix/store -mindepth 1 -maxdepth 1 > /nixcache/defaultstore.txt
         if: steps.cache-nix-copy.outputs.cache-hit != 'true'
         shell: bash
       - name: Restore cache
-        run: sudo mv -n /nixcache/store/* /nix/store ; sudo $(which nix-store) --load-db < /nixcache/nix.db
+        run: |-
+          sudo mv -n /nixcache/store/* /nix/store
+          sudo $(which nix-store) --load-db < /nixcache/nix.db
         if: steps.cache-nix-copy.outputs.cache-hit == 'true'
         shell: bash
       - name: Setup postrun command to create cache
@@ -42,6 +42,18 @@ jobs:
             bash -c "sudo rm -rf /nixcache/store ; mkdir -p /nixcache/store ; nix-store --dump-db > /nixcache/nix.db ;
             cat /nixcache/defaultstore.txt | xargs sudo rm -rf ; sudo rm /nixcache/defaultstore.txt ; sudo mv
             /nix/store/* /nixcache/store"
+      - name: Get pnpm step
+        id: pnpm-store
+        run: >-
+          echo "::set-output name=PNPM_STORE::$(
+            pnpm store path
+          )"
+      - name: Pnpm cache
+        id: cache-pnpm-store
+        uses: actions/cache@v3
+        with:
+          path: "${{ steps.pnpm-store.outputs.PNPM_STORE }}"
+          key: funkeyx11
 
       - run: pnpm install
       - run: pnpm test
