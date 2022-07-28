@@ -2,6 +2,7 @@ import { SelectPackageManagerOptions } from "addPackage"
 import { detectPackageManager } from "detectPackageManager"
 import { removePackageNpm } from "removePackageNpm"
 import { removePackagePnpm } from "removePackagePnpm"
+import { removePackageYarn } from "removePackageYarn"
 
 export type RemovePackageOptions = {
   /** The directory of the project from which the packages will be removed
@@ -34,7 +35,7 @@ export const removePackage = async (
 
   const addPackageFunctions = {
     pnpm: removePackagePnpm,
-    yarn: () => undefined,
+    yarn: removePackageYarn,
     npm: removePackageNpm,
   }
 
