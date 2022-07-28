@@ -3,7 +3,7 @@
   "version": "0.3.0",
   "main": "dist/index.js",
   "license": "MIT",
-  "description": "Install packages using the pnpm API",
+  "description": "Install node packages with pnpm, npm or yarn",
   "author": {
     "name": "Zebreus",
     "email": "lennarteichhorn@googlemail.com"
@@ -48,12 +48,15 @@
     "dist/**"
   ],
   "keywords": [
+    "pnpm",
+    "npm",
+    "yarn",
     "install",
-    "add",
     "package",
+    "add",
+    "remove",
     "module",
-    "installer",
-    "pnpm"
+    "installer"
   ],
   "dependencies": {
     "@npmcli/arborist": "^5.3.1",
