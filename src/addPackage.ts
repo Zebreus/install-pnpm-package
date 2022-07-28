@@ -1,5 +1,6 @@
 import { addPackageNpm } from "addPackageNpm"
 import { addPackagePnpm } from "addPackagePnpm"
+import { addPackageYarn } from "addPackageYarn"
 import { detectPackageManager, PackageManager } from "detectPackageManager"
 
 export type AddPackageOptions = {
@@ -41,7 +42,7 @@ export const addPackage = async (
 
   const addPackageFunctions = {
     pnpm: addPackagePnpm,
-    yarn: () => undefined,
+    yarn: addPackageYarn,
     npm: addPackageNpm,
   }
 

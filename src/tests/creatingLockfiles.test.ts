@@ -2,8 +2,8 @@ import { checkForLockfiles } from "detectPackageManager"
 import { runInDirectory } from "tests/runInDirectory"
 import { addPackage } from ".."
 
-describe.each([["pnpm" as const], ["npm" as const]])("%s is creating lockfiles", packageManager => {
-  test("%s adds the correct lockfile", async () => {
+describe.each([["pnpm" as const], ["yarn" as const], ["npm" as const]])("%s is creating lockfiles", packageManager => {
+  test("Creates the correct lockfile", async () => {
     await runInDirectory(async dir => {
       await addPackage("ora@latest", { directory: dir, packageManager })
       const lockfiles = await checkForLockfiles(dir)
@@ -11,7 +11,7 @@ describe.each([["pnpm" as const], ["npm" as const]])("%s is creating lockfiles",
     })
   }, 60000)
 
-  test("%s does not add the wrong lockfile", async () => {
+  test("Creates no wrong lockfiles", async () => {
     await runInDirectory(async dir => {
       await addPackage("ora@latest", { directory: dir, packageManager })
       const lockfiles = await checkForLockfiles(dir)
