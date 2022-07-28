@@ -1,9 +1,6 @@
 import { addPackageNpm } from "addPackageNpm"
 import { addPackagePnpm } from "addPackagePnpm"
-import { PackageManager } from "detectPackageManager"
-import { constants } from "fs"
-import { access } from "fs/promises"
-import path from "path"
+import { detectPackageManager, PackageManager } from "detectPackageManager"
 
 export type AddPackageOptions = {
   /** The directory of the project where the packages will be added
@@ -32,35 +29,6 @@ export type SelectPackageManagerOptions = {
    * If it can not be detected it will fallback to `pnpm`
    */
   packageManager?: PackageManager
-}
-
-const detectPackageManager = async (
-  directory: string,
-  preferredChoice?: SelectPackageManagerOptions["packageManager"]
-) => {
-  if (preferredChoice) {
-    return preferredChoice
-  }
-
-  const lockfiles = [
-    { type: "yarn", file: "yarn.lock" },
-    { type: "pnpm", file: "pnpm-lock.yaml" },
-    { type: "npm", file: "package-lock.json" },
-    { type: "npm", file: "npm-shrinkwrap.json" },
-  ] as const
-  const fileChecks = lockfiles.map(async lockfile => ({
-    ...lockfile,
-    exists: await access(path.resolve(directory, lockfile.file), constants.F_OK)
-      .then(() => true)
-      .catch(() => false),
-  }))
-
-  const fileCheckResults = await Promise.all(fileChecks)
-  const packageManagersWithLockfiles = [
-    ...new Set(fileCheckResults.filter(({ exists }) => exists).map(({ type }) => type)),
-  ]
-
-  return packageManagersWithLockfiles[0] ?? "pnpm"
 }
 
 export const addPackage = async (
