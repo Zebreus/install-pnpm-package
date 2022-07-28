@@ -8,10 +8,17 @@ export const runInDirectory = async <T>(testFunction: (directory: string) => Pro
     .substring(0, 5)
   const testdir = resolve(__dirname, randomName)
 
-  const packagePath = resolve(__dirname, "./../../", "package.json")
-  const lockfilePath = resolve(__dirname, "./../../", "pnpm-lock.yaml")
+  const filesThatShouldNotGetModifiedDuringTesting = [
+    "package.json",
+    "pnpm-lock.yaml",
+    "yarn.lock",
+    "package-lock.json",
+    "npm-shrinkwrap.json",
+  ]
 
-  const filesBefore = await Promise.all([readFile(packagePath, "utf8"), readFile(lockfilePath, "utf8")])
+  const filepaths = filesThatShouldNotGetModifiedDuringTesting.map(file => resolve(__dirname, "./../../", file))
+
+  const filesBefore = await Promise.all(filepaths.map(filepath => readFile(filepath, "utf8").catch(() => "")))
 
   await mkdir(testdir, { recursive: true })
 
@@ -26,10 +33,9 @@ export const runInDirectory = async <T>(testFunction: (directory: string) => Pro
 
     const result = await testFunction(testdir)
 
-    const filesAfter = await Promise.all([readFile(packagePath, "utf8"), readFile(lockfilePath, "utf8")])
+    const filesAfter = await Promise.all(filepaths.map(filepath => readFile(filepath, "utf8").catch(() => "")))
 
-    expect(filesBefore[0] === filesAfter[0]).toBe(true)
-    expect(filesBefore[1] === filesAfter[1]).toBe(true)
+    expect(filesBefore).toEqual(filesAfter)
 
     return result
   } finally {

@@ -1,12 +1,11 @@
-import getConfig from "@pnpm/config"
-import { mutateModules } from "@pnpm/core"
-import readProjectManifest from "@pnpm/read-project-manifest"
-import { createOrConnectStoreController } from "@pnpm/store-connection-manager"
-import writeProjectManifest from "@pnpm/write-project-manifest"
+import { addPackageNpm } from "addPackageNpm"
+import { addPackagePnpm } from "addPackagePnpm"
+import { PackageManager } from "detectPackageManager"
+import { constants } from "fs"
+import { access } from "fs/promises"
 import path from "path"
-import { simplifyPeerDependencyIssues } from "simplifyPeerDependencyIssues"
 
-type AddPackageOptions = {
+export type AddPackageOptions = {
   /** The directory of the project where the packages will be added
    *
    * @default process.cwd()
@@ -27,66 +26,58 @@ type AddPackageOptions = {
   type?: "normal" | "dev" | "optional" | "peer"
 }
 
-export const addPackage = async (packages: string | string[], options?: AddPackageOptions) => {
+export type SelectPackageManagerOptions = {
+  /** Select your preferred package manager.
+   * If not set it will be detected automatically.
+   * If it can not be detected it will fallback to `pnpm`
+   */
+  packageManager?: PackageManager
+}
+
+const detectPackageManager = async (
+  directory: string,
+  preferredChoice?: SelectPackageManagerOptions["packageManager"]
+) => {
+  if (preferredChoice) {
+    return preferredChoice
+  }
+
+  const lockfiles = [
+    { type: "yarn", file: "yarn.lock" },
+    { type: "pnpm", file: "pnpm-lock.yaml" },
+    { type: "npm", file: "package-lock.json" },
+    { type: "npm", file: "npm-shrinkwrap.json" },
+  ] as const
+  const fileChecks = lockfiles.map(async lockfile => ({
+    ...lockfile,
+    exists: await access(path.resolve(directory, lockfile.file), constants.F_OK)
+      .then(() => true)
+      .catch(() => false),
+  }))
+
+  const fileCheckResults = await Promise.all(fileChecks)
+  const packageManagersWithLockfiles = [
+    ...new Set(fileCheckResults.filter(({ exists }) => exists).map(({ type }) => type)),
+  ]
+
+  return packageManagersWithLockfiles[0] ?? "pnpm"
+}
+
+export const addPackage = async (
+  packages: string | string[],
+  options?: AddPackageOptions & SelectPackageManagerOptions
+) => {
   const packagesArray = Array.isArray(packages) ? packages : [packages]
   const directory = options?.directory ?? process.cwd()
-  const type = options?.type ?? "normal"
+  const packageManager = await detectPackageManager(directory, options?.packageManager)
 
-  const { manifest, fileName } = await readProjectManifest(directory)
+  const addPackageFunctions = {
+    pnpm: addPackagePnpm,
+    yarn: () => undefined,
+    npm: addPackageNpm,
+  }
 
-  const config = await getConfig({
-    cliOptions: {
-      dir: directory,
-    },
-    packageManager: {
-      name: "yarn",
-      version: "4.0.0",
-    },
-    workspaceDir: directory,
-  })
+  const addPackageFunction = addPackageFunctions[packageManager]
 
-  const storeController = await createOrConnectStoreController({
-    ...config.config,
-    dir: directory,
-    workspaceDir: directory,
-  })
-
-  const projects = await mutateModules(
-    [
-      {
-        manifest: manifest,
-        allowNew: true,
-        dependencySelectors: packagesArray,
-        targetDependenciesField:
-          type === "dev"
-            ? "devDependencies"
-            : type === "optional"
-            ? "optionalDependencies"
-            : type === "peer"
-            ? "devDependencies"
-            : "dependencies",
-        mutation: "installSome",
-        peer: type === "peer",
-        pruneDirectDependencies: true,
-        rootDir: directory,
-      },
-    ],
-    {
-      storeDir: storeController.dir,
-      storeController: storeController.ctrl,
-      useLockfile: true,
-      saveLockfile: true,
-      fixLockfile: true,
-      lockfileDir: directory,
-      autoInstallPeers: true,
-    }
-  )
-
-  await writeProjectManifest(path.resolve(directory, fileName), projects[0].manifest)
-
-  const peerDependencyIssues = projects[0].peerDependencyIssues
-    ? simplifyPeerDependencyIssues(projects[0].peerDependencyIssues)
-    : []
-
-  return peerDependencyIssues
+  return addPackageFunction(packagesArray, options)
 }

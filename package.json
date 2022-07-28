@@ -56,12 +56,14 @@
     "pnpm"
   ],
   "dependencies": {
+    "@npmcli/arborist": "^5.3.1",
     "@pnpm/config": "^15.6.1",
     "@pnpm/core": "^5.7.0",
+    "@pnpm/logger": "^4.0.0",
+    "@pnpm/parse-wanted-dependency": "^3.0.1",
     "@pnpm/read-project-manifest": "^3.0.6",
     "@pnpm/store-connection-manager": "^4.1.22",
     "@pnpm/write-project-manifest": "^3.0.5",
-    "@pnpm/logger": "^4.0.0",
     "@yarnpkg/core": "4.0.0-rc.14"
   }
 }
