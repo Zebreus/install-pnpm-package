@@ -3,7 +3,7 @@ import { readFile } from "fs/promises"
 import path from "path"
 import { runInDirectory } from "tests/runInDirectory"
 
-describe.each([["pnpm" as const], ["npm" as const]])("Test with %s.", packageManager => {
+describe.each([["pnpm" as const], ["npm" as const]])("%s is adding packages", packageManager => {
   test("Adding package does not crash", async () => {
     await runInDirectory(async dir => {
       await expect(addPackage("ora@latest", { directory: dir, packageManager })).resolves.not.toThrow()
