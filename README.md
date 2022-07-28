@@ -1,8 +1,11 @@
 # install-pnpm-package
 
-Install packages using the pnpm API.
+Install packages into `npm`, `pnpm` or `yarn` projects.
 
-Does not require pnpm to be installed, as it uses `@pnpm/core` directly. This way it also does not spawn a new process.
+Does not require any package manager to be installed, as it uses
+[`@pnpm/core`](https://github.com/pnpm/pnpm/tree/main/packages/core#readme) or
+[@npmcli/arborist](https://github.com/npm/cli/tree/latest/workspaces/arborist#readme) directly. This way it also does
+not spawn a new process.
 
 # Usage
 
@@ -21,9 +24,6 @@ await addPackage(["lodash", "underscore", "ramda"])
 // Install a package into a project in /projects/my-project
 await addPackage("lodash", { directory: "/projects/my-project" })
 
-// Install a package into the project into the working directory
-await addPackage("lodash")
-
 // Install a package as devDependencies
 await addPackage("lodash", { type: "dev" })
 
@@ -32,6 +32,12 @@ await addPackage("lodash", { type: "peer" })
 
 // Install a package as optionalDependencies
 await addPackage("lodash", { type: "optional" })
+
+// Install a package using the yarn.lock lockfile
+await addPackage("lodash", { packageManager: "yarn" })
+
+// Install a package using the package-lock.json lockfile
+await addPackage("lodash", { packageManager: "npm" })
 
 // Remove multiple packages
 await removePackage(["lodash", "underscore", "ramda"])
@@ -51,6 +57,16 @@ await removePackage("lodash", { type: "dev" })
 // You can basically combine all operations above, e.g. remove multiple modules from devDependencies from a package in /projects/my-project
 await removePackage(["lodash", "underscore"], { directory: "/projects/my-project", type: "dev" })
 ```
+
+If you already know which lockfile format you want to use, you can also use the `addPackageNpm`, `addPackagePnpm` or
+`addPackageYarn` functions.
+
+## How does addPackage know which lockfile to generate
+
+We parse the lockfiles inside the target directory and generate lockfiles for the same format afterwards.
+
+In future we could also look into the node_modules structure or the packageManager key in package.json, but that is not
+implemented yet.
 
 # Background
 
@@ -93,3 +109,9 @@ lockfile in a directory above yours and use that.
   linked gitrepo, so I did not find this until after creating this package.
 - [yarn-install](https://github.com/egoist/yarn-install): Install packages from javascript. Spawns a yarn or npm
   process.
+- [@npmcli/arborist](https://github.com/npm/cli/tree/latest/workspaces/arborist): The library npm uses to manage
+  `node_modules` trees. Easy to use for a few specific tasks, quite a pain for anything unusual.
+- [@pnpm/core](https://github.com/pnpm/pnpm/tree/main/packages/core): The core API of pnpm. Quite powerful, but somewhat
+  hard to use
+- [@yarn/core](https://github.com/pnpm/pnpm/tree/main/packages/core): The core API of yarn 2. Lowlevel functionality for
+  package management.
