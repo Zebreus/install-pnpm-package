@@ -1,2 +1,8 @@
 export { addPackage } from "addPackage"
+export { addPackageNpm } from "addPackageNpm"
+export { addPackagePnpm } from "addPackagePnpm"
+export { addPackageYarn } from "addPackageYarn"
 export { removePackage } from "removePackage"
+export { removePackageNpm } from "removePackageNpm"
+export { removePackagePnpm } from "removePackagePnpm"
+export { removePackageYarn } from "removePackageYarn"
