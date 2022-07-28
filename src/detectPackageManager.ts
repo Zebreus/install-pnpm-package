@@ -4,11 +4,7 @@ import { resolve } from "path"
 
 export type PackageManager = "npm" | "yarn" | "pnpm"
 
-export const detectPackageManager = async (directory: string, preference?: PackageManager) => {
-  if (preference) {
-    return preference
-  }
-
+export const checkForLockfiles = (directory: string) => {
   const lockfiles = [
     { type: "yarn", file: "yarn.lock" },
     { type: "pnpm", file: "pnpm-lock.yaml" },
@@ -22,7 +18,16 @@ export const detectPackageManager = async (directory: string, preference?: Packa
       .catch(() => false),
   }))
 
-  const fileCheckResults = await Promise.all(fileChecks)
+  return Promise.all(fileChecks)
+}
+
+export const detectPackageManager = async (directory: string, preference?: PackageManager) => {
+  if (preference) {
+    return preference
+  }
+
+  const fileCheckResults = await checkForLockfiles(directory)
+
   const packageManagersWithLockfiles = [
     ...new Set(fileCheckResults.filter(({ exists }) => exists).map(({ type }) => type)),
   ]
