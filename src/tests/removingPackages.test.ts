@@ -4,7 +4,7 @@ import path from "path"
 import { removePackage } from "removePackage"
 import { runInDirectory } from "tests/runInDirectory"
 
-describe.each([["pnpm" as const] /* , ["yarn" as const], ["npm" as const] */])(
+describe.each([["pnpm" as const] /* , ["yarn" as const]*/, ["npm" as const]])(
   "%s removing packages",
   packageManager => {
     test("Removing a package works", async () => {

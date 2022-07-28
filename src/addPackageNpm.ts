@@ -45,7 +45,6 @@ export const addPackageNpm = async (packages: string | string[], options?: AddPa
   const packagesArray = Array.isArray(packages) ? packages : [packages]
   const directory = options?.directory ?? process.cwd()
   const type = options?.type ?? "normal"
-  // const yarn = false
 
   const saveType = {
     normal: "prod",
@@ -58,7 +57,7 @@ export const addPackageNpm = async (packages: string | string[], options?: AddPa
     path: directory,
     packageLockOnly: true,
     force: true,
-  })
+  } as ArboristOptions)
 
   await arb.loadActual({
     add: packagesArray,
@@ -83,12 +82,5 @@ export const addPackageNpm = async (packages: string | string[], options?: AddPa
     )
   }
 
-  // if (yarn) {
-  // }
-  // arb.idealTree.yarnLock = new YarnLock()
-  // arb.idealTree.yarnLock.fromTree(arb.idealTree)
-
   await arb.reify({ save: true, packageLockOnly: true })
-
-  // console.log(result)
 }

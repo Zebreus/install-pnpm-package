@@ -1,5 +1,6 @@
 import { SelectPackageManagerOptions } from "addPackage"
 import { detectPackageManager } from "detectPackageManager"
+import { removePackageNpm } from "removePackageNpm"
 import { removePackagePnpm } from "removePackagePnpm"
 
 export type RemovePackageOptions = {
@@ -34,7 +35,7 @@ export const removePackage = async (
   const addPackageFunctions = {
     pnpm: removePackagePnpm,
     yarn: () => undefined,
-    npm: () => undefined,
+    npm: removePackageNpm,
   }
 
   const addPackageFunction = addPackageFunctions[packageManager]
