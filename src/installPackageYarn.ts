@@ -3,11 +3,11 @@ import { Arborist } from "@npmcli/arborist"
 // @ts-expect-error: No types available for arborist
 import YarnLock from "@npmcli/arborist/lib/yarn-lock"
 import parseWantedDependency from "@pnpm/parse-wanted-dependency"
-import { AddPackageOptions } from "addPackage"
 import { rm } from "fs/promises"
+import { InstallPackageOptions } from "installPackage"
 import { resolve } from "path"
 
-export const addPackageYarn = async (packages: string | string[], options?: AddPackageOptions) => {
+export const installPackageYarn = async (packages: string | string[], options?: InstallPackageOptions) => {
   const packagesArray = Array.isArray(packages) ? packages : [packages]
   const directory = options?.directory ?? process.cwd()
   const type = options?.type ?? "normal"

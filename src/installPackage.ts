@@ -1,9 +1,9 @@
-import { addPackageNpm } from "addPackageNpm"
-import { addPackagePnpm } from "addPackagePnpm"
-import { addPackageYarn } from "addPackageYarn"
 import { detectPackageManager, PackageManager } from "detectPackageManager"
+import { installPackageNpm } from "installPackageNpm"
+import { installPackagePnpm } from "installPackagePnpm"
+import { installPackageYarn } from "installPackageYarn"
 
-export type AddPackageOptions = {
+export type InstallPackageOptions = {
   /** The directory of the project where the packages will be added
    *
    * @default process.cwd()
@@ -32,21 +32,21 @@ export type SelectPackageManagerOptions = {
   packageManager?: PackageManager
 }
 
-export const addPackage = async (
+export const installPackage = async (
   packages: string | string[],
-  options?: AddPackageOptions & SelectPackageManagerOptions
+  options?: InstallPackageOptions & SelectPackageManagerOptions
 ) => {
   const packagesArray = Array.isArray(packages) ? packages : [packages]
   const directory = options?.directory ?? process.cwd()
   const packageManager = await detectPackageManager(directory, options?.packageManager)
 
-  const addPackageFunctions = {
-    pnpm: addPackagePnpm,
-    yarn: addPackageYarn,
-    npm: addPackageNpm,
+  const installPackageFunctions = {
+    pnpm: installPackagePnpm,
+    yarn: installPackageYarn,
+    npm: installPackageNpm,
   }
 
-  const addPackageFunction = addPackageFunctions[packageManager]
+  const installPackageFunction = installPackageFunctions[packageManager]
 
-  return addPackageFunction(packagesArray, options)
+  return installPackageFunction(packagesArray, options)
 }

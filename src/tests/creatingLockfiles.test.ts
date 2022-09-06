@@ -1,11 +1,11 @@
 import { checkForLockfiles } from "detectPackageManager"
 import { runInDirectory } from "tests/runInDirectory"
-import { addPackage } from ".."
+import { installPackage } from ".."
 
 describe.each([["pnpm" as const], ["yarn" as const], ["npm" as const]])("%s is creating lockfiles", packageManager => {
   test("Creates the correct lockfile", async () => {
     await runInDirectory(async dir => {
-      await addPackage("ora@latest", { directory: dir, packageManager })
+      await installPackage("ora@latest", { directory: dir, packageManager })
       const lockfiles = await checkForLockfiles(dir)
       expect(lockfiles.filter(({ exists }) => exists).filter(({ type }) => type === packageManager).length).toBeTruthy()
     })
@@ -13,7 +13,7 @@ describe.each([["pnpm" as const], ["yarn" as const], ["npm" as const]])("%s is c
 
   test("Creates no wrong lockfiles", async () => {
     await runInDirectory(async dir => {
-      await addPackage("ora@latest", { directory: dir, packageManager })
+      await installPackage("ora@latest", { directory: dir, packageManager })
       const lockfiles = await checkForLockfiles(dir)
       expect(lockfiles.filter(({ exists }) => exists).filter(({ type }) => type !== packageManager).length).toBe(0)
     })

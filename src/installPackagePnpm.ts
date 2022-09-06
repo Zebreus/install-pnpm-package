@@ -3,11 +3,11 @@ import { mutateModules } from "@pnpm/core"
 import readProjectManifest from "@pnpm/read-project-manifest"
 import { createOrConnectStoreController } from "@pnpm/store-connection-manager"
 import writeProjectManifest from "@pnpm/write-project-manifest"
-import { AddPackageOptions } from "addPackage"
+import { InstallPackageOptions } from "installPackage"
 import path from "path"
 import { simplifyPeerDependencyIssues } from "simplifyPeerDependencyIssues"
 
-export const addPackagePnpm = async (packages: string | string[], options?: AddPackageOptions) => {
+export const installPackagePnpm = async (packages: string | string[], options?: InstallPackageOptions) => {
   const packagesArray = Array.isArray(packages) ? packages : [packages]
   const directory = options?.directory ?? process.cwd()
   const type = options?.type ?? "normal"

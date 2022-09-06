@@ -1,5 +1,5 @@
-import { addPackage } from "addPackage"
 import { readFile } from "fs/promises"
+import { installPackage } from "installPackage"
 import path from "path"
 import { removePackage } from "removePackage"
 import { runInDirectory } from "tests/runInDirectory"
@@ -7,7 +7,7 @@ import { runInDirectory } from "tests/runInDirectory"
 describe.each([["pnpm" as const], ["yarn" as const], ["npm" as const]])("%s removing packages", packageManager => {
   test("Removing a package works", async () => {
     await runInDirectory(async dir => {
-      await expect(addPackage("lodash", { directory: dir, packageManager })).resolves.not.toThrow()
+      await expect(installPackage("lodash", { directory: dir, packageManager })).resolves.not.toThrow()
       const packageJsonA = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
       expect(packageJsonA.dependencies?.lodash).toBeDefined()
       await expect(removePackage("lodash", { directory: dir, packageManager })).resolves.not.toThrow()
@@ -18,7 +18,7 @@ describe.each([["pnpm" as const], ["yarn" as const], ["npm" as const]])("%s remo
 
   test("Removing multiple package works", async () => {
     await runInDirectory(async dir => {
-      await expect(addPackage(["lodash", "underscore"], { directory: dir, packageManager })).resolves.not.toThrow()
+      await expect(installPackage(["lodash", "underscore"], { directory: dir, packageManager })).resolves.not.toThrow()
       const packageJsonA = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
       expect(packageJsonA.dependencies?.lodash).toBeDefined()
       expect(packageJsonA.dependencies?.underscore).toBeDefined()
@@ -31,7 +31,7 @@ describe.each([["pnpm" as const], ["yarn" as const], ["npm" as const]])("%s remo
 
   test("Removing a package from a dev dependency works", async () => {
     await runInDirectory(async dir => {
-      await expect(addPackage("lodash", { directory: dir, type: "dev", packageManager })).resolves.not.toThrow()
+      await expect(installPackage("lodash", { directory: dir, type: "dev", packageManager })).resolves.not.toThrow()
       const packageJsonA = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
       expect(packageJsonA.dependencies?.lodash).toBeUndefined()
       expect(packageJsonA.devDependencies?.lodash).toBeDefined()
@@ -44,7 +44,7 @@ describe.each([["pnpm" as const], ["yarn" as const], ["npm" as const]])("%s remo
 
   test("Removing a package with a type specified removes it only from that field", async () => {
     await runInDirectory(async dir => {
-      await expect(addPackage("lodash", { directory: dir, type: "normal", packageManager })).resolves.not.toThrow()
+      await expect(installPackage("lodash", { directory: dir, type: "normal", packageManager })).resolves.not.toThrow()
       const packageJsonA = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
       expect(packageJsonA.dependencies?.lodash).toBeDefined()
       expect(packageJsonA.devDependencies?.lodash).toBeUndefined()
@@ -55,7 +55,7 @@ describe.each([["pnpm" as const], ["yarn" as const], ["npm" as const]])("%s remo
     })
 
     await runInDirectory(async dir => {
-      await expect(addPackage("lodash", { directory: dir, type: "normal", packageManager })).resolves.not.toThrow()
+      await expect(installPackage("lodash", { directory: dir, type: "normal", packageManager })).resolves.not.toThrow()
       const packageJsonA = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
       expect(packageJsonA.dependencies?.lodash).toBeDefined()
       expect(packageJsonA.devDependencies?.lodash).toBeUndefined()
@@ -68,10 +68,10 @@ describe.each([["pnpm" as const], ["yarn" as const], ["npm" as const]])("%s remo
 
   test("Removing packages without specifying the type of dependency removes them from all dependencies", async () => {
     await runInDirectory(async dir => {
-      await expect(addPackage("lodash", { directory: dir, type: "normal", packageManager })).resolves.not.toThrow()
-      await expect(addPackage("underscore", { directory: dir, type: "dev", packageManager })).resolves.not.toThrow()
-      await expect(addPackage("ramda", { directory: dir, type: "optional", packageManager })).resolves.not.toThrow()
-      await expect(addPackage("ora", { directory: dir, type: "peer", packageManager })).resolves.not.toThrow()
+      await expect(installPackage("lodash", { directory: dir, type: "normal", packageManager })).resolves.not.toThrow()
+      await expect(installPackage("underscore", { directory: dir, type: "dev", packageManager })).resolves.not.toThrow()
+      await expect(installPackage("ramda", { directory: dir, type: "optional", packageManager })).resolves.not.toThrow()
+      await expect(installPackage("ora", { directory: dir, type: "peer", packageManager })).resolves.not.toThrow()
       const packageJsonA = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
       expect(packageJsonA.dependencies?.lodash).toBeDefined()
       expect(packageJsonA.devDependencies?.lodash).toBeUndefined()
@@ -99,7 +99,7 @@ describe.each([["pnpm" as const], ["yarn" as const], ["npm" as const]])("%s remo
 
   test("Removing a dependency that is also a peer dependency also removes it as a peer dependency", async () => {
     await runInDirectory(async dir => {
-      await expect(addPackage("lodash", { directory: dir, type: "peer", packageManager })).resolves.not.toThrow()
+      await expect(installPackage("lodash", { directory: dir, type: "peer", packageManager })).resolves.not.toThrow()
       const packageJsonA = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
       expect(packageJsonA.dependencies?.lodash).toBeUndefined()
       expect(packageJsonA.devDependencies?.lodash).toBeDefined()
@@ -114,7 +114,7 @@ describe.each([["pnpm" as const], ["yarn" as const], ["npm" as const]])("%s remo
 
   test("Removing a dependency with the wrong type keeps the peer dependency", async () => {
     await runInDirectory(async dir => {
-      await expect(addPackage("lodash", { directory: dir, type: "peer", packageManager })).resolves.not.toThrow()
+      await expect(installPackage("lodash", { directory: dir, type: "peer", packageManager })).resolves.not.toThrow()
       const packageJsonA = JSON.parse(await readFile(path.resolve(dir, "package.json"), "utf8"))
       expect(packageJsonA.dependencies?.lodash).toBeUndefined()
       expect(packageJsonA.devDependencies?.lodash).toBeDefined()

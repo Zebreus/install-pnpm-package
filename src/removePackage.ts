@@ -1,5 +1,5 @@
-import { SelectPackageManagerOptions } from "addPackage"
 import { detectPackageManager } from "detectPackageManager"
+import { SelectPackageManagerOptions } from "installPackage"
 import { removePackageNpm } from "removePackageNpm"
 import { removePackagePnpm } from "removePackagePnpm"
 import { removePackageYarn } from "removePackageYarn"
@@ -33,13 +33,13 @@ export const removePackage = async (
   const directory = options?.directory ?? process.cwd()
   const packageManager = await detectPackageManager(directory, options?.packageManager)
 
-  const addPackageFunctions = {
+  const installPackageFunctions = {
     pnpm: removePackagePnpm,
     yarn: removePackageYarn,
     npm: removePackageNpm,
   }
 
-  const addPackageFunction = addPackageFunctions[packageManager]
+  const installPackageFunction = installPackageFunctions[packageManager]
 
-  return addPackageFunction(packagesArray, options)
+  return installPackageFunction(packagesArray, options)
 }

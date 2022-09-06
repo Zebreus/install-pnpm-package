@@ -1,7 +1,7 @@
 // @ts-expect-error: No types available for arborist
 import { Arborist } from "@npmcli/arborist"
 import parseWantedDependency from "@pnpm/parse-wanted-dependency"
-import { AddPackageOptions } from "addPackage"
+import { InstallPackageOptions } from "installPackage"
 
 type ArboristOptions = {
   /** Array of package names to add */
@@ -41,7 +41,7 @@ type ArboristOptions = {
   force?: boolean
 }
 
-export const addPackageNpm = async (packages: string | string[], options?: AddPackageOptions) => {
+export const installPackageNpm = async (packages: string | string[], options?: InstallPackageOptions) => {
   const packagesArray = Array.isArray(packages) ? packages : [packages]
   const directory = options?.directory ?? process.cwd()
   const type = options?.type ?? "normal"

@@ -10,34 +10,34 @@ not spawn a new process.
 # Usage
 
 ```typescript
-import { addPackage, removePackage } from "install-pnpm-package"
+import { installPackage, removePackage } from "install-pnpm-package"
 
 // Install a node package
-await addPackage("lodash")
+await installPackage("lodash")
 
 // Remove a node package
 await removePackage("lodash")
 
 // Install multiple packages
-await addPackage(["lodash", "underscore", "ramda"])
+await installPackage(["lodash", "underscore", "ramda"])
 
 // Install a package into a project in /projects/my-project
-await addPackage("lodash", { directory: "/projects/my-project" })
+await installPackage("lodash", { directory: "/projects/my-project" })
 
 // Install a package as devDependencies
-await addPackage("lodash", { type: "dev" })
+await installPackage("lodash", { type: "dev" })
 
 // Install a package as peerDependencies (and devDependencies)
-await addPackage("lodash", { type: "peer" })
+await installPackage("lodash", { type: "peer" })
 
 // Install a package as optionalDependencies
-await addPackage("lodash", { type: "optional" })
+await installPackage("lodash", { type: "optional" })
 
 // Install a package using the yarn.lock lockfile
-await addPackage("lodash", { packageManager: "yarn" })
+await installPackage("lodash", { packageManager: "yarn" })
 
 // Install a package using the package-lock.json lockfile
-await addPackage("lodash", { packageManager: "npm" })
+await installPackage("lodash", { packageManager: "npm" })
 
 // Remove multiple packages
 await removePackage(["lodash", "underscore", "ramda"])
@@ -58,10 +58,10 @@ await removePackage("lodash", { type: "dev" })
 await removePackage(["lodash", "underscore"], { directory: "/projects/my-project", type: "dev" })
 ```
 
-If you already know which lockfile format you want to use, you can also use the `addPackageNpm`, `addPackagePnpm` or
-`addPackageYarn` functions.
+If you already know which lockfile format you want to use, you can also use the `installPackageNpm`,
+`installPackagePnpm` or `installPackageYarn` functions.
 
-## How does addPackage know which lockfile to generate
+## How does installPackage know which lockfile to generate
 
 We parse the lockfiles inside the target directory and generate lockfiles for the same format afterwards.
 
