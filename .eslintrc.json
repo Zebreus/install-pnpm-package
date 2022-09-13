@@ -6,10 +6,7 @@
     "plugin:import/recommended",
     "plugin:jest/recommended"
   ],
-  "plugins": [
-    "import",
-    "@typescript-eslint"
-  ],
+  "plugins": ["import", "@typescript-eslint"],
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-unused-vars": [
@@ -50,16 +47,8 @@
       "error",
       {
         "groups": [
-          [
-            "internal",
-            "external",
-            "builtin"
-          ],
-          [
-            "parent",
-            "sibling",
-            "index"
-          ]
+          ["internal", "external", "builtin"],
+          ["parent", "sibling", "index"]
         ],
         "alphabetize": {
           "order": "asc",
@@ -88,10 +77,7 @@
   },
   "overrides": [
     {
-      "files": [
-        "*.ts",
-        "*.tsx"
-      ],
+      "files": ["*.ts", "*.tsx"],
       "parserOptions": {
         "parser": "@typescript-eslint/parser",
         "ecmaVersion": 2018,
@@ -99,15 +85,9 @@
         "project": "./tsconfig.json"
       },
       "settings": {
-        "import/external-module-folders": [
-          "node_modules",
-          "node_modules/@types"
-        ],
+        "import/external-module-folders": ["node_modules", "node_modules/@types"],
         "import/parsers": {
-          "@typescript-eslint/parser": [
-            ".ts",
-            ".tsx"
-          ]
+          "@typescript-eslint/parser": [".ts", ".tsx"]
         },
         "import/resolver": {
           "typescript": {

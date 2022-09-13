@@ -18,4 +18,3 @@
   "vueIndentScriptAndStyle": false,
   "plugins": ["prettier-plugin-organize-imports"]
 }
-
